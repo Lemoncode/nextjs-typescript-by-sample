@@ -21,6 +21,12 @@ npm install
 npm install @zeit/next-typescript --save
 ```
 
+- And the typings.
+
+```
+npm install @types/react --save-dev
+```
+
 - We need to add a typescript configuration.
 
 _./tsconfig.json_
