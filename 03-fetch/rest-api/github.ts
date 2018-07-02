@@ -1,5 +1,5 @@
 import {UserEntity} from '../model/user';
-
+import fetch from 'isomorphic-unfetch';
 const baseRoot = 'https://api.github.com/orgs/lemoncode';
 const userCollectionURL = `${baseRoot}/members`
 
