@@ -15,7 +15,7 @@ export const UserRow = (props: Props) =>
       <span>{props.user.id}</span>
     </td>
     <td>
-      <Link href={`/user-info?id=${props.user.id}`}>
+    <Link as={`user-info/id/${props.user.id}`} href={`/user-info?id=${props.user.id}`}>
         <a>{props.user.login}</a>
       </Link>    
     </td>
