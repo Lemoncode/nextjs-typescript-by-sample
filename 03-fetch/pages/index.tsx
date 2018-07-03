@@ -1,18 +1,36 @@
 import * as React from 'react';
+import * as Next from 'next';
 import Link from 'next/link';
 import getUserCollection from '../rest-api/github';
-import { UserEntity } from '../model/user'
-import { UserHeader } from './components/user-info/header';
-import { UserRow } from './components/user-info/row';
-
+import {UserTable} from './components/user-info';
+import { UserEntity } from 'model/user';
 
 interface Props {
   userCollection: UserEntity[],
 }
 
-// Pending add react SFC
-export const Index = (props: Props) => {
-  const async getInitialProps = () => {
+const Index : Next.NextSFC<Props> = (props) => (
+  <div>
+  <p>Hello Next.js</p>
+
+  <UserTable userCollection={props.userCollection}/>
+
+  <Link href="/user-info">
+    <a>Navigate to user info page</a>
+  </Link>
+</div>
+)
+
+Index.getInitialProps = async () =>  {
+  const data = await getUserCollection();
+
+  return {
+    userCollection: data,
+  }
+}
+
+/*
+const async getInitialProps = () => {
     const data = await getUserCollection();
 
     return {
@@ -44,7 +62,7 @@ export const Index = (props: Props) => {
     </div>
   )
 }
-
+*/
 
 
 export default Index;
