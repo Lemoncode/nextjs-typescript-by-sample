@@ -100,7 +100,7 @@ that the output is displayed not in the browser but in your server console.
 
 - Now that we have the data let's add the UI part.
 
-_./pages/components/user-info/header.tsx_
+_./pages/components/user-collection/header.tsx_
 
 ```typescript
 import * as React from 'react';
@@ -119,7 +119,7 @@ export const UserHeader = () =>
     </tr>
 ```
 
-_./pages/components/user-info/row.tsx_
+_./pages/components/user-collection/row.tsx_
 
 ```typescript
 import * as React from 'react';
@@ -143,7 +143,7 @@ export const UserRow = (props: Props) =>
   </tr>
 ```
 
-_./pages/components/user-info/user-table.tsx_
+_./pages/components/user-collection/user-table.tsx_
 
 ```typescript
 import { UserEntity } from "model/user";
@@ -169,7 +169,7 @@ export const UserTable = (props : Props) =>
 </table>
 ```
 
-_./pages/components/user-info/index.ts_
+_./pages/components/user-collection/index.ts_
 
 ```typescript
 export {UserTable} from './user-table';
@@ -185,7 +185,7 @@ import * as Next from 'next';
 import Link from 'next/link';
 import getUserCollection from '../rest-api/github';
 import { UserEntity } from 'model/user';
-+ import {UserTable} from './components/user-info';
++ import {UserTable} from './components/user-collection';
 
 
 interface Props {

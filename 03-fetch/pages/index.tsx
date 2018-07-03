@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as Next from 'next';
 import Link from 'next/link';
 import getUserCollection from '../rest-api/github';
-import {UserTable} from './components/user-info';
+import {UserTable} from './components/user-collection';
 import { UserEntity } from 'model/user';
 
 interface Props {
