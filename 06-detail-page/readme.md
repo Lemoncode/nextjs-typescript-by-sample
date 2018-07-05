@@ -101,7 +101,7 @@ interface Props {
 _./pages/user-info.tsx_
 
 ```diff
-const InnerIndex : Next.NextSFC<Props> = (props)  => (
+const InnerUserInfoPage : Next.NextSFC<Props> = (props)  => (
   <div>
     <h2>I'm the user info page</h2>      
     <p>User ID Selected: {props.userId}</p> 
@@ -112,7 +112,7 @@ const InnerIndex : Next.NextSFC<Props> = (props)  => (
   </div>
 );
 
-InnerIndex.getInitialProps = async (props) =>  {
+InnerUserInfoPage.getInitialProps = async (props) =>  {
   const query = props.query;
   const id = query.id as string;
 

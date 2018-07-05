@@ -16,13 +16,13 @@ npm install
 _./pages/user-info.tsx_
 
 ```typescript
-const Index = () => (
+const UserInfoPage = () => (
   <div>
     <h2>I'm the user info page</h2>    
   </div>
 );
 
-export default Index;
+export default UserInfoPage;
 ```
 
 - Now in order to add some useful navigation in both client and server side we can wrap a navigation ancho with a nextjs

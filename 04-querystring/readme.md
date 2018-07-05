@@ -46,8 +46,8 @@ _./pages/user-info-tsx_
 ```diff
 + import {withRouter} from 'next/router';
 
-- const Index = () => (
-+ const Index = withRouter((props) => (
+- const UserInfoPage = () => (
++ const UserInfoPage = withRouter((props) => (
   <div>
     <h2>I'm the user info page</h2>    
 +   <h3>{props.router.query.id}</h3>    
@@ -55,7 +55,7 @@ _./pages/user-info-tsx_
 -);
 +));
 
-export default Index;
+export default UserInfoPage;
 ``` 
 
 - Let's run the sample.

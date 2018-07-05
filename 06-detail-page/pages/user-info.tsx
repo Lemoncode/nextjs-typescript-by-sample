@@ -9,7 +9,7 @@ interface Props {
   userDetail : UserDetailEntity;
 }
 
-const InnerIndex : Next.NextSFC<Props> = (props)  => (
+const InnerUserInfoPage : Next.NextSFC<Props> = (props)  => (
   <div>
     <h2>I'm the user info page</h2>      
     <p>User ID Selected: {props.userId}</p> 
@@ -20,7 +20,7 @@ const InnerIndex : Next.NextSFC<Props> = (props)  => (
   </div>
 );
 
-InnerIndex.getInitialProps = async (props) =>  {
+InnerUserInfoPage.getInitialProps = async (props) =>  {
   const query = props.query;
   const id = query.id as string;
 
@@ -32,6 +32,6 @@ InnerIndex.getInitialProps = async (props) =>  {
   }
 }
 
-const Index = withRouter(InnerIndex);
+const UserInfoPage = withRouter(InnerUserInfoPage);
 
-export default Index;
+export default UserInfoPage;
