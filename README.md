@@ -1,7 +1,7 @@
 # nextjs-typescript-by-sample
 Set of guided samples about how to get started with nextjs + TypeScript.
 
-# About the sample application
+# About the example application
 
 We have developed a simple web application that displays a list of github users (fetch from github rest api), and when you click on a given user it navigate to a detail page where you can find detailed information about the selected user.
 
@@ -14,7 +14,12 @@ Topics covered in this sample:
 - Navigating to anoterh pages passing parameters via query string.
 - Creating clean urls (seo friendly).
 
-Topics that will be covered in future sample:
+Topics that will be covered in future examples:
+
+- Debugging.
+- Deploying.
+- Styling.
+- Redux support.
 
 
 # About Lemoncode
