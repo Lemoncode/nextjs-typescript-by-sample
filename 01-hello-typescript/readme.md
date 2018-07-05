@@ -1,6 +1,6 @@
 # Hello typescript
 
-In this sample we will add Typescript support to our project, we will start from sample _00-hello-next_.
+In this example we will add Typescript support to our project, we will start from sample _00-hello-next_.
 
 At the moment of the writing of this sample Babel 7 was on beta (Babel 7 will have typescript support), we will use
 a plugin based on Babel 7: https://github.com/zeit/next-plugins/tree/master/packages/next-typescript

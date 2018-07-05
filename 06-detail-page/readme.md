@@ -2,7 +2,7 @@
 
 Let's complete the sample by implementing the details page.
 
-This sample won't introduce any new concept, just grab the right id from the query string,
+This example won't introduce any new concept, just grab the right id from the query string,
 fetch the user detailed data and display it.
 
 # Steps

@@ -2,7 +2,7 @@
 
 Let's get started with the very basics let's create a very basic 'Hello World' sample using next.
 
-In this sample we will use javascript as base language, in our next sample we will move to typescript.
+In this example we will use javascript as base language, in our next sample we will move to typescript.
 
 This sample is quite similar to the basic one pointed in nextjs tutorial: https://nextjs.org/learn/basics/getting-started/setup
 
