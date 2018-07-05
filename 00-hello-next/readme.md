@@ -31,7 +31,7 @@ _package.json_
 },
 ```
 
-- Let's create our first page (by convention the will fall under the pages subfolder).
+- Let's create our first page (by convention it should fall under the pages subfolder).
 
 _./pages/index.js_
 
