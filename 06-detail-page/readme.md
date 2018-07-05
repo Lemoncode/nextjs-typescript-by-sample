@@ -54,7 +54,7 @@ import fetch from 'isomorphic-unfetch';
 - const userCollectionURL = `${baseRoot}/members`
 + const baseRoot = 'https://api.github.com';
 + const userCollectionURL = `${baseRoot}/orgs/lemoncode/members`
-+ const userDetailsURL = `${baseRoot}/users`
++ const userDetailsURL = `${baseRoot}/user`
 
 - const getUserCollection =  async () => {
 + export  const getUserCollection =  async () => {
@@ -81,36 +81,38 @@ import fetch from 'isomorphic-unfetch';
 - export default getUserCollection;
 ```
 
-- Let's update the _index_ page import.
-
-```diff
-- import getUserCollection from '../rest-api/github';
-+ import {getUserCollection} from '../rest-api/github';
-import {UserTable} from './components/user-collection';
-import { UserEntity } from 'model/user';
-```
-
-- Next step let's add _getInitialProps_ to the _user-info.tsx_ page.
+- Now let's prepare the _user-info_ to read the Id from getInitialProps (we want to be able to read that from
+server or client).
 
 _./pages/user-info.tsx_
 
-```diff
-+ import * as Next from 'next';
-import {withRouter} from 'next/router';
-+ import { getUserDetail } from '../rest-api/github';
-+ import { UserDetailEntity } from 'model/user-details';
+```typescript
+import * as React from 'react';
+import * as Next from 'next';
+import Link from 'next/link';
+import {getUserCollection} from '../rest-api/github';
+import {UserTable} from './components/user-collection';
+import { UserEntity } from 'model/user';
 
-- const Index =withRouter((props) => (
-+ const Index =withRouter((props) : Next.NextSFC<Props> => (
+interface Props {
+  userCollection: UserEntity[],
+}
+
+const Index : Next.NextSFC<Props> = (props) => (
   <div>
-    <h2>I'm the user info page</h2> 
-    <h3>{props.router.query.id}</h3>          
-  </div>
-));
+  <p>Hello Next.js</p>
 
-+ Index.getInitialProps = async (props) =>  {
-+   const data = await getUserDetail();
-+
+  <UserTable userCollection={props.userCollection}/>
+
+  <Link href="/user-info">
+    <a>Navigate to user info page</a>
+  </Link>
+</div>
+)
+
+Index.getInitialProps = async () =>  {
+  const data = await getUserCollection();
+
   return {
     userCollection: data,
   }
@@ -119,21 +121,67 @@ import {withRouter} from 'next/router';
 export default Index;
 ```
 
+- Now let's load the data from the API that we have created.
+
+_./pages/user-info.tsx_
+
+```diff
+
+```
+
 
 - Now that we have the data loaded is time to display it on the component, we will just implement something very simple.
 
 _./pages/user-info.tsx_
 
 ```diff
+import * as React from 'react';
+import * as Next from 'next';
+import {withRouter} from 'next/router';
++ import {getUserDetail} from '../rest-api/github';
++ import {UserDetailEntity} from '../model/user-detail';
+
+interface Props {
+  userId : string;
++  userDetail : UserDetailEntity;
+}
 ```
 
+_./pages/user-info.tsx_
+
+```diff
+const InnerIndex : Next.NextSFC<Props> = (props)  => (
+  <div>
+    <h2>I'm the user info page</h2>      
+    <p>User ID Selected: {props.userId}</p> 
++    <img src={props.userDetail.avatar_url} style={{ maxWidth: '10rem' }} />
++    <p>User name: {props.userDetail.name}</p>  
++    <p>Company: {props.userDetail.company}</p>  
++    <p>Followers: {props.userDetail.followers}</p>  
+  </div>
+);
+
+InnerIndex.getInitialProps = async (props) =>  {
+  const query = props.query;
+  const id = query.id as string;
+
++  const userDetail = await getUserDetail(id);
+
+  return {    
+    userId: id,
++    userDetail
+  }
+}
+```
+
+/*
   login: string;
   id: number;
   avatar_url: string;
   name : string;
   company : string;
   followers : string;
-
+*/
 
 
 - Let's give a try:

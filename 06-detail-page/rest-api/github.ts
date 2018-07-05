@@ -4,7 +4,7 @@ import fetch from 'isomorphic-unfetch';
 
 const baseRoot = 'https://api.github.com';
 const userCollectionURL = `${baseRoot}/orgs/lemoncode/members`
-const userDetailsURL = `${baseRoot}/users`
+const userDetailsURL = `${baseRoot}/user`
 
 export const getUserCollection = async () => {
   const res = await fetch(userCollectionURL)
@@ -15,13 +15,13 @@ export const getUserCollection = async () => {
   );
 }
 
-export const getUserDetail = async (login: string) => {
-  const fullUserDetailURL = `${userDetailsURL}/${login}`;
-
+export const getUserDetail = async (userlogin: string) : Promise<UserDetailEntity> => {
+  const fullUserDetailURL = `${userDetailsURL}/${userlogin}`;
+  
   const res = await fetch(fullUserDetailURL)
   const data = await res.json();
+  console.log(data);
+  const { id, login, avatar_url, name, company, followers } = data;
 
-  return data.map(
-    ({ id, login, avatar_url, name, company, followers }) => ({ id, login, avatar_url, name, company, followers } as UserDetailEntity)
-  );
+  return { id, login, avatar_url, name, company, followers };  
 }
