@@ -66,67 +66,18 @@ import fetch from 'isomorphic-unfetch';
   );
 }
 
-+ export const getUserDetail =  async (login : string) => {
-+  const fullUserDetailURL = `${userDetailsURL}/${login}`;
-
++ export const getUserDetail = async (userlogin: string) : Promise<UserDetailEntity> => {
++  const fullUserDetailURL = `${userDetailsURL}/${userlogin}`;
+  
 +  const res = await fetch(fullUserDetailURL)
 +  const data = await res.json();
++  console.log(data);
++  const { id, login, avatar_url, name, company, followers } = data;
 +
-+  return data.map(
-+    ({id, login, avatar_url, name, company, followers}) => ({ id, login, avatar_url, name, company, followers} as UserDetailEntity)
-+  );
++  return { id, login, avatar_url, name, company, followers };  
 + }
 
-
 - export default getUserCollection;
-```
-
-- Now let's prepare the _user-info_ to read the Id from getInitialProps (we want to be able to read that from
-server or client).
-
-_./pages/user-info.tsx_
-
-```typescript
-import * as React from 'react';
-import * as Next from 'next';
-import Link from 'next/link';
-import {getUserCollection} from '../rest-api/github';
-import {UserTable} from './components/user-collection';
-import { UserEntity } from 'model/user';
-
-interface Props {
-  userCollection: UserEntity[],
-}
-
-const Index : Next.NextSFC<Props> = (props) => (
-  <div>
-  <p>Hello Next.js</p>
-
-  <UserTable userCollection={props.userCollection}/>
-
-  <Link href="/user-info">
-    <a>Navigate to user info page</a>
-  </Link>
-</div>
-)
-
-Index.getInitialProps = async () =>  {
-  const data = await getUserCollection();
-
-  return {
-    userCollection: data,
-  }
-}
-
-export default Index;
-```
-
-- Now let's load the data from the API that we have created.
-
-_./pages/user-info.tsx_
-
-```diff
-
 ```
 
 
@@ -173,16 +124,6 @@ InnerIndex.getInitialProps = async (props) =>  {
   }
 }
 ```
-
-/*
-  login: string;
-  id: number;
-  avatar_url: string;
-  name : string;
-  company : string;
-  followers : string;
-*/
-
 
 - Let's give a try:
 
