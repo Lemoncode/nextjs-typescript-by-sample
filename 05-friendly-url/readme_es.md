@@ -101,7 +101,7 @@ _./package.json_
 npm run dev
 ```
 
-- añadiremos un caso "get" para la nueva URL amigable que hemos creado.
+- Añadiremos un "server.get" para la nueva URL amigable que hemos creado.
 
 ```diff
 const express = require('express')
