@@ -1,28 +1,27 @@
-# Friendly URL's
+# URLS amigables
 
-One of the goals of supporting server side rendering is to obtain good SEO results. One of the basic pilars of SEO consists on generating
-friendly URL's, right now in the user detail page we are generating something like:
+Uno de los objetivos que tenemos a la hora de implementar server side rendering es poder obtener buenos resultados en SEO. Uno de sus pilares es generar URLS amigables. Si vamos al "user detail page" podremos ver que se esta generando algo como:
 
 http://localhost:3000/user-info?id=1457912
 
-It would be better to rewrite the URL and display it in the following way:
+De otra manera se podría reescribir la URL mostrándola así:
 
 http://localhost:3000/user-info/id/1457912
 
-We will do that in two steps:
-  - Support this friendly url on the client side.
-  - Support this friendly url on the server side.
+Podemos hacer esto en dos pasos:
+  - Dar soporte a la URL amigable en el lado del cliente.
+  - Dar soporte a la URL amigable en el lado del servidor.
 
-# Steps
+# Pasos
 
-- Let's start by copying the content of _04-querystring_ in our working folder.
+- Vamos a copiar el contenido de _04-querystring_ en nuestra carpeta de trabajo.
 
-- Let's install the needed packages.
+- Acto seguido, instalaremos los paquetes necesarios.
 
 ```bash
 npm install
 ```
-- Let's update our _row.tsx_ component to use a link alias.
+- Actualizaremos el componente  _row.tsx_  para usar un alias en nuestro enlace.
 
 _./pages/components/user-collection/row.tsx_
 
@@ -35,23 +34,23 @@ _./pages/components/user-collection/row.tsx_
     </td>
 ```
 
-- Let's run the sample and check how it works:
+- Ahora comprobamos como funciona ejecutando el ejemplo:
 
 ```bash
 npm run dev
 ```
 
-- Are we ready? The answer is no, if we click on refresh it won't perform the server side rendering properly (we get a 404).
+- Ya estamos listos? La respuesta es NO. Si refrescáramos la página el server side rendering no estaría funcionando correctamente, por lo que obtendríamos un 404.
 
-- To get the server behaving in the same way as the client we need to do some extra plumbing.
+- Para que el servidor se comporte de la misma manera que el cliente, vamos a necesitar añadir más contenido:
 
-- Let's install _express_
+- Instalamos _express_
 
 ```bash
 npm install express --save
 ```
 
-- Let's create a file called _server.js_ 
+- Crearemos un archivo llamado _server.js_ 
 
 _./server.js_
 
@@ -82,9 +81,9 @@ app.prepare()
 })
 ```
 
-> in this file we just create a next app and listen to any request, this request will just be handled by the next app.
+> en este archivo solo hemos creado una aplicación "next" escuchando cualquier petición. Esta petición solo será controlada por la aplicación "next".
 
-- Let's update our _package.json_ entry.
+- Ahora actualizamos nuestra entrada _package.json_ .
 
 _./package.json_
 
@@ -96,13 +95,13 @@ _./package.json_
   },
 ```
 
-- Let's double check that the server is working (no server side clean url yet).
+- Vamos a comprobar si el servidor esta funcionando (todavía sin URL limpia del lado del servidor)
 
 ```bash
 npm run dev
 ```
 
-- Now let's add a get case for the new friendly url we have created.
+- añadiremos un caso "get" para la nueva URL amigable que hemos creado.
 
 ```diff
 const express = require('express')
@@ -137,7 +136,7 @@ app.prepare()
 })
 ```
 
-- If we run the code now, we're going to get the right behavior after we refresh the page.
+- Ahora si ejecutamos el código vamos a ver que la URL amigable funciona de manera correcta, una vez que refresquemos la página.
 
 ```bash
 npm run dev
