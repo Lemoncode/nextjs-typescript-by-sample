@@ -27,14 +27,14 @@ import { UserEntity } from 'model/user';
 
 - Now lets add the link:
 
-_./pages/components/user-info/row.tsx_
+_./pages/components/user-collection/row.tsx_
 
 ```diff
     <td>
 +     <Link href={`/user-info?id=${props.user.id}`}>
 -      <span>{props.user.login}</span>
 +      <a>{props.user.login}</a>
-+     </link>        
++     </Link>        
     </td>
 ```
 
@@ -46,7 +46,7 @@ _./pages/user-info-tsx_
 ```diff
 + import {withRouter} from 'next/router';
 
-- const UserInfoPage = () => (
+- const Index = () => (
 + const UserInfoPage = withRouter((props) => (
   <div>
     <h2>I'm the user info page</h2>    
@@ -59,6 +59,43 @@ export default UserInfoPage;
 ``` 
 
 - Let's run the sample.
+
+```bash
+npm run dev
+```
+
+If you want to play a little bit more with query string just add
+
+_./pages/components/user-collection/row.tsx_
+
+```diff
+    <td>
++ <Link href={`/user-info?id=${props.user.id}&name=${props.user.login}`}>
+- <Link href={`/user-info?id=${props.user.id}`}>     
++     <a>{props.user.login}</a>
++ </Link>        
+    </td>
+```
+And later to see other parameter captured from the query string add this:
+
+_./pages/user-info-tsx_
+
+```diff
+ import {withRouter} from 'next/router';
+
+
+const UserInfoPage = withRouter((props) => (
+  <div>
+    <h2>I'm the user info page</h2>    
+   <h3>{props.router.query.id}</h3>
++  <h3>{props.router.query.name}</h3>      
+  </div>
+
+));
+
+export default UserInfoPage;
+``` 
+- Let's run the sample again.
 
 ```bash
 npm run dev
