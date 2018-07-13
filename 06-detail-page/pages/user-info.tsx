@@ -1,8 +1,6 @@
-import * as React from 'react';
-import * as Next from 'next';
-import {withRouter} from 'next/router';
-import {getUserDetail} from '../rest-api/github';
-import {UserDetailEntity} from '../model/user-detail';
+import { withRouter } from 'next/router';
+import { getUserDetail } from '../rest-api/github';
+import { UserDetailEntity } from '../model/user-detail';
 
 interface Props {
   userId : string;
