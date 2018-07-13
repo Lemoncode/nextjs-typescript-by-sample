@@ -43,21 +43,23 @@ export interface UserDetailEntity {
 
 - Let's create a new entry on the api to read the details of the selected user from the github api.
 
-_./rest-api/github.tsx_
+_./rest-api/github.ts_
+
+_./rest-api/github.ts_
 
 ```diff
-import {UserEntity} from '../model/user';
-+ import {UserDetailEntity} from '../model/user-detail';
+import { UserEntity } from '../model/user';
++ import { UserDetailEntity } from '../model/user-detail';
 import fetch from 'isomorphic-unfetch';
 
--const baseRoot = 'https://api.github.com/orgs/lemoncode';
+- const baseRoot = 'https://api.github.com/orgs/lemoncode';
 - const userCollectionURL = `${baseRoot}/members`
 + const baseRoot = 'https://api.github.com';
-+ const userCollectionURL = `${baseRoot}/orgs/lemoncode/members`
-+ const userDetailsURL = `${baseRoot}/user`
++ const userCollectionURL = `${baseRoot}/orgs/lemoncode/members`;
++ const userDetailsURL = `${baseRoot}/users`;
 
-- const getUserCollection =  async () => {
-+ export  const getUserCollection =  async () => {
+- const getUserCollection = async () => {
++ export const getUserCollection = async () => {
   const res = await fetch(userCollectionURL)
   const data = await res.json();
 
@@ -67,62 +69,78 @@ import fetch from 'isomorphic-unfetch';
 }
 
 + export const getUserDetail = async (userlogin: string) : Promise<UserDetailEntity> => {
-+  const fullUserDetailURL = `${userDetailsURL}/${userlogin}`;
-  
-+  const res = await fetch(fullUserDetailURL)
-+  const data = await res.json();
-+  console.log(data);
-+  const { id, login, avatar_url, name, company, followers } = data;
-+
-+  return { id, login, avatar_url, name, company, followers };  
++   const fullUserDetailURL = `${userDetailsURL}/${userlogin}`;
++    
++   const res = await fetch(fullUserDetailURL)
++   const data = await res.json();
++   console.log(data);
++   const { id, login, avatar_url, name, company, followers } = data;
++   return { id, login, avatar_url, name, company, followers };  
 + }
 
 - export default getUserCollection;
 ```
 
+- Once we have added the entry `getUserDetail` in `github.ts`, we no longer have a default export of the module and therefore `index.tsx` will throw an error when the `getUserCollection` member is not found. To fix it, we must modify the file `index.tsx` by editing the import so that `getUserCollection` keeps running.
+
+_./pages/index.tsx_
+
+```diff
+- import getUserCollection from '../rest-api/github';
++ import { getUserCollection } from '../rest-api/github';
+```
 
 - Now that we have the data loaded is time to display it on the component, we will just implement something very simple.
 
 _./pages/user-info.tsx_
 
 ```diff
-import * as React from 'react';
-import * as Next from 'next';
-import {withRouter} from 'next/router';
-+ import {getUserDetail} from '../rest-api/github';
-+ import {UserDetailEntity} from '../model/user-detail';
++ import * as React from 'react';
++ import * as Next from 'next';
+import { withRouter } from 'next/router';
++ import { getUserDetail } from '../rest-api/github';
++ import { UserDetailEntity } from '../model/user-detail';
 
-interface Props {
-  userId : string;
-+  userDetail : UserDetailEntity;
-}
-```
++ interface Props {
++   userId : string;
++   userDetail : UserDetailEntity;
++ }
++ 
++ const InnerUserInfoPage : Next.NextSFC<Props> = (props)  => (
++   <div>
++     <h2>I'm the user info page</h2>      
++     <p>User ID Selected: {props.userId}</p> 
++     <img src={props.userDetail.avatar_url} style={{ maxWidth: '10rem' }} />
++     <p>User name: {props.userDetail.name}</p>  
++     <p>Company: {props.userDetail.company}</p>  
++     <p>Followers: {props.userDetail.followers}</p>  
++   </div>
++ );
++ 
++ InnerUserInfoPage.getInitialProps = async (props) =>  {
++   const query = props.query;
++   const id = query.id as string;
++ 
++   const userDetail = await getUserDetail(id);  
++ 
++   return {    
++     userId: id,
++     userDetail
++   }
++ }
++ 
++ const UserInfoPage = withRouter(InnerUserInfoPage);
++ 
++ export default UserInfoPage;
 
-_./pages/user-info.tsx_
+- const Index = withRouter((props) => (
+-   <div>
+-     <h2>I'm the user info page</h2> 
+-     <h3>{props.router.query.id}</h3>     
+-   </div>
+- ));
 
-```diff
-const InnerUserInfoPage : Next.NextSFC<Props> = (props)  => (
-  <div>
-    <h2>I'm the user info page</h2>      
-    <p>User ID Selected: {props.userId}</p> 
-+    <img src={props.userDetail.avatar_url} style={{ maxWidth: '10rem' }} />
-+    <p>User name: {props.userDetail.name}</p>  
-+    <p>Company: {props.userDetail.company}</p>  
-+    <p>Followers: {props.userDetail.followers}</p>  
-  </div>
-);
-
-InnerUserInfoPage.getInitialProps = async (props) =>  {
-  const query = props.query;
-  const id = query.id as string;
-
-+  const userDetail = await getUserDetail(id);
-
-  return {    
-    userId: id,
-+    userDetail
-  }
-}
+- export default Index;
 ```
 
 - Let's give a try:
