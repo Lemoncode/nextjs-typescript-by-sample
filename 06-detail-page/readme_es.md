@@ -1,21 +1,20 @@
-# Detail page
+# Página detalle
 
-Let's complete the sample by implementing the details page.
+Vamos a completar el ejemplo implementando la página de detalles.
 
-This example won't introduce any new concept, just grab the right id from the query string,
-fetch the user detailed data and display it.
+Este ejemplo no introducirá ningún concepto nuevo, sólo toma el id correcto de la query string, busca los datos detallados del usuario y los muestra.
 
-# Steps
+# Pasos
 
-- We will take as starting point sample _05-friendly-url_.
+- Tomaremos como punto de partida el ejemplo _05-friendly-url_.
 
-- Let's install the dependencies.
+- Instalamos las dependencias.
 
 ```bash
 npm install
 ```
 
-- Now we will make an update to pass to the user-info url the name of the user instead of the id.
+- Ahora haremos una actualización para pasar a la url de user-info el nombre del usuario en lugar del id.
 
 _./pages/components/user-collection/row.tsx_
 
@@ -26,9 +25,9 @@ _./pages/components/user-collection/row.tsx_
   </Link>
 ```
 
-- Time to create an entity that will hold the user details.
+- Es hora de crear una entidad que contenga los detalles del usuario.
 
-__./model/user-detail.ts_
+_./model/user-detail.ts_
 
 ```typescript
 export interface UserDetailEntity {
@@ -41,9 +40,7 @@ export interface UserDetailEntity {
 }
 ```
 
-- Let's create a new entry on the api to read the details of the selected user from the github api.
-
-_./rest-api/github.ts_
+- Vamos a crear una nueva entrada en la API para leer los detalles del usuario seleccionado desde la api de github.
 
 _./rest-api/github.ts_
 
@@ -81,7 +78,7 @@ import fetch from 'isomorphic-unfetch';
 - export default getUserCollection;
 ```
 
-- Once we have added the entry `getUserDetail` in `github.ts`, we no longer have a default export of the module and therefore `index.tsx` will throw an error when the `getUserCollection` member is not found. To fix it, we must modify the file `index.tsx` by editing the import so that `getUserCollection` keeps running.
+- Una vez hemos añadido la entrada `getUserDetail` en `github.ts`, ya no tenemos una exportación por defecto del módulo y por tanto, `index.tsx` lanzará un error al no encontrar el miembro `getUserCollection`. Para solucionarlo, debemos modificar el archivo `index.tsx` editando el import para que `getUserCollection` siga funcionando.
 
 _./pages/index.tsx_
 
@@ -90,7 +87,7 @@ _./pages/index.tsx_
 + import { getUserCollection } from '../rest-api/github';
 ```
 
-- Now that we have the data loaded is time to display it on the component, we will just implement something very simple.
+- Ahora que tenemos los datos cargados es hora de mostrarlos en el componente, implementaremos algo muy simple.
 
 _./pages/user-info.tsx_
 
@@ -143,7 +140,7 @@ import { withRouter } from 'next/router';
 - export default Index;
 ```
 
-- Let's give a try:
+- Vamos a probarlo:
 
 ```bash
 npm run dev
