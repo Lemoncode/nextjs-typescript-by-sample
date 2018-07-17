@@ -1,33 +1,32 @@
 # Hello typescript
 
-In this example we will add Typescript support to our project, we will start from sample _00-hello-next_.
+En este ejemplo vamos a añadir soporte Typescript a nuestro proyecto, partiremos del ejemplo _00-hello-next_.
 
-At the moment of the writing of this sample Babel 7 was on beta (Babel 7 will have typescript support), we will use
-a plugin based on Babel 7: https://github.com/zeit/next-plugins/tree/master/packages/next-typescript
+En el momento de escribir este ejemplo Babel 7 estaba en versión beta (Babel 7 tendrá soporte para typescript), usaremos un plugin basado en Babel 7: https://github.com/zeit/next-plugins/tree/master/packages/next-typescript
 
-This is the official typescript plugin for next.
+Este es el plugin oficial de typescript  para next.
 
-# Steps
+# Pasos
 
-- To get started copy the files from sample _00-hello-next_ and execute:
+- Para comenzar copia los fichero del ejemplo _00-hello-next_ y ejecuta:
 
 ```bash
 npm install
 ```
 
-- Let's install Typescript plus _next-typescript_ plugin.
+- Instalemos el plugin _next-typescript_.
 
 ```
 npm install @zeit/next-typescript --save
 ```
 
-- And the typings.
+- Y los typings.
 
 ```
 npm install @types/react --save-dev
 ```
 
-- We need to add a typescript configuration.
+- Necesitamos añadir una configuración typescript.
 
 _./tsconfig.json_
 
@@ -56,8 +55,8 @@ _./tsconfig.json_
 }
 ```
 
-- Next allow us to extend it's default webpack configuration,
-let's create a _next.config.js_ file and include the Typescript configuration.
+- Next nos permite extender la configuración por defecto de webpack,
+creemos un fichero _next.config.js_ file e incluyamos la configuración Typescript.
 
 _./next.config.js_
 
@@ -70,10 +69,9 @@ module.exports = withTypescript({
 })
 ```
 
-- Let's rename our _index.js_ to _index.tsx_.
+- Renombremos nuestro _index.js_ a _index.tsx_.
 
-- Let's add some simple typescript code to check that 
-transpilation is working as expected.
+- Añadamos algo de codigo typescript simple para comprobar que la transpilación funciona como esperamos.
 
 ```diff 
 + const myLanguage = "Typescript";
@@ -87,7 +85,7 @@ const Index = () => (
 
 export default Index;
 ```
-- Babel needs to be configured to work. We create ./.babelrc in the root folder. In this example, we use this .babelrc:
+- Necesitamos configurar Babel para que funcione. Creamos un ./.babelrc en la carpeta raíz.  En este ejemplo vamos a utilizar el siguien .babelrc:
 
 _[./.babelrc](./.babelrc)_
 ```json
@@ -98,7 +96,8 @@ _[./.babelrc](./.babelrc)_
   ]
 }
 ```
-- Let's try the sample
+
+- Probemos el ejemplo
 
 ```bash
 npm run dev
