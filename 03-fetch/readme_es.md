@@ -219,8 +219,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import getUserCollection from '../rest-api/github';
 import {UserEntity} from '../model/user'
-import { UserHeader } from './components/user-info/header';
-import { UserRow } from './components/user-info/row';
+import { UserTable } from './components/user-collection';
 
 
 interface Props {
@@ -263,18 +262,7 @@ export class Index extends React.Component<Props, State> {
       <div>
         <p>Hello Next.js</p>
 
-        <table>
-          <thead>
-              <UserHeader />
-          </thead>
-          <tbody>
-            {
-              this.state.myStateCollection.map((user: UserEntity) =>
-                <UserRow user={user} key={user.id} />
-              )
-            }
-          </tbody>
-        </table>
+        <UserTable userCollection={this.state.myStateCollection}/>
 
         <Link href="/user-info">
           <a>Navigate to user info page</a>
