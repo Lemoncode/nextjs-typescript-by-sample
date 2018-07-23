@@ -1,26 +1,24 @@
-# Fetching data
+# Recuperando datos
 
-It's time to fetch data from a remote source, let consume a Github api end point to retrieve a list 
-of members that belong to a group.
+Ha llegado el momento de recuperar datos desde una fuente remota, vamos a consumir datos a través de un servicio de github para recuperar una lista de miembros que pertenecen a un grupo.
 
-# Steps
+# Pasos
+- El punto de comienzo de este ejemplo es _02-navigation_ (vamos a copiar este ejemplo en una nueva subcarpeta)
 
-- We will take as starting point _02-navigation_ (let's copy that sample into a new subfolder).
-
-- Let's install the dependencies.
+- A continuación instalaremos las dependencias
 
 ```bash
 npm install
 ```
 
-- In order to perform a fetch call on both server and client side we will install the package
-_isomorphic-unfetch_.
+- Para realizar la recuperación de datos en el lado de servidor y en el de cliente vamos a instalar el paquete _isomorphic-unfetch_.
 
 ```bash
 npm install isomorphic-unfetch --save
 ```
 
-- let's create a model.
+
+- A continuación vamos a crear un modelo. 
 
 _./model/user.ts_
 
@@ -32,8 +30,7 @@ export interface UserEntity {
 }
 ```
 
-- Let's create a simple _rest-api_ entry.
-
+- Vamos a crear una rest-api simple
 _./rest-api/github.ts_
 
 ```typescript
@@ -54,10 +51,7 @@ const getUserCollection =  async () => {
 
 export default getUserCollection;
 ```
-
-- Let's consume it in our _index_ page, first we will just console out the api call result.
-One important thing to note down, we will make use of _getInitialProps_ this new hook
-allows us to make a call from the server side or client side.
+- Vamos a consumir los datos en nuestra página principal, primero simplemente mostraremos por consola el resultado de la llamada a la api. Una cosa importante a remarcar, vamos a hacer uso de getInitialProps que nos permite realizar una llamada desde el lado del servidor o del cliente.
 
 ```diff
 + import * as React from 'react';
@@ -95,11 +89,12 @@ import Link from 'next/link';
 export default Index;
 ```
 
-- Now if we place a _console.log(data);_ right after
-_const data = await getUserCollection();_ we can check 
-that the output is displayed not in the browser but in your server console.
+- Ahora si colocamos un  _console.log(data);_ justo después de 
+_const data = await getUserCollection();_ aunque no se vea en el navegador el
+resultado se mostrará en la consola del servidor.
 
-- Now that we have the data let's add the UI part.
+- Ahora que tenemos la parte del consumo de datos vamos a comenzar con la parte
+UI.
 
 _./pages/components/user-collection/header.tsx_
 
@@ -214,9 +209,10 @@ Index.getInitialProps = async () =>  {
 }
 ```
 
-## Appendix
+## Apendice
 
-What if we want to store the list of users in the component State instead of Properties, we could do it in this way:
+Si preferimos mantener la lista de usuarios en el estado del componente en lugar de en las propiedades, podemos hacerlo de la siguiente manera:
+
 
 ```typescript
 import * as React from 'react';
