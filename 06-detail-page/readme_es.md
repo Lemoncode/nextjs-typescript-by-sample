@@ -49,14 +49,11 @@ import { UserEntity } from '../model/user';
 + import { UserDetailEntity } from '../model/user-detail';
 import fetch from 'isomorphic-unfetch';
 
-- const baseRoot = 'https://api.github.com/orgs/lemoncode';
-- const userCollectionURL = `${baseRoot}/members`
-+ const baseRoot = 'https://api.github.com';
-+ const userCollectionURL = `${baseRoot}/orgs/lemoncode/members`;
+const baseRoot = 'https://api.github.com';
+const userCollectionURL = `${baseRoot}/orgs/lemoncode/members`;
 + const userDetailsURL = `${baseRoot}/users`;
 
-- const getUserCollection = async () => {
-+ export const getUserCollection = async () => {
+export const getUserCollection = async () => {
   const res = await fetch(userCollectionURL)
   const data = await res.json();
 
@@ -74,17 +71,6 @@ import fetch from 'isomorphic-unfetch';
 +   const { id, login, avatar_url, name, company, followers } = data;
 +   return { id, login, avatar_url, name, company, followers };  
 + }
-
-- export default getUserCollection;
-```
-
-- Una vez hemos añadido la entrada `getUserDetail` en `github.ts`, ya no tenemos una exportación por defecto del módulo y por tanto, `index.tsx` lanzará un error al no encontrar el miembro `getUserCollection`. Para solucionarlo, debemos modificar el archivo `index.tsx` editando el import para que `getUserCollection` siga funcionando.
-
-_./pages/index.tsx_
-
-```diff
-- import getUserCollection from '../rest-api/github';
-+ import { getUserCollection } from '../rest-api/github';
 ```
 
 - Ahora que tenemos los datos cargados es hora de mostrarlos en el componente, implementaremos algo muy simple.
