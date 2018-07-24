@@ -27,8 +27,8 @@ _./pages/components/user-collection/row.tsx_
 
 ```diff
     <td>
--      <Link href={`/user-info?id=${props.user.id}`}>
-+      <Link as={`user-info/id/${props.user.id}`} href={`/user-info?id=${props.user.id}`}>
+-      <Link href={`/user-info?id=${props.user.login}`}>
++      <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
         <a>{props.user.login}</a>
       </Link>    
     </td>
@@ -115,9 +115,9 @@ app.prepare()
 .then(() => {
   const server = express()
 
-+ server.get('/user-info/id/:id', (req, res) => {
++ server.get('/user-info/login/:login', (req, res) => {
 +   const actualPage = '/user-info';
-+   const queryParams = {id: req.params.id};
++   const queryParams = {login: req.params.login};
 +   app.render(req, res, actualPage, queryParams);
 + })
 
