@@ -43,7 +43,7 @@ import fetch from 'isomorphic-unfetch';
 const baseRoot = 'https://api.github.com/orgs/lemoncode';
 const userCollectionURL = `${baseRoot}/members`
 
-const getUserCollection =  async () => {
+export const getUserCollection =  async () => {
   const res = await fetch(userCollectionURL)
   const data = await res.json();
 
@@ -51,8 +51,6 @@ const getUserCollection =  async () => {
     ({id, login, avatar_url,}) => ({ id, login, avatar_url, } as UserEntity)
   );
 }
-
-export default getUserCollection;
 ```
 
 - Let's consume it in our _index_ page, first we will just console out the api call result.
@@ -63,7 +61,7 @@ allows us to make a call from the server side or client side.
 + import * as React from 'react';
 import Link from 'next/link';
 + import * as Next from 'next';
-+ import getUserCollection from '../rest-api/github';
++ import { getUserCollection } from '../rest-api/github';
 + import { UserEntity } from '../model/user';
 
 - const myLanguage = "Typescript";

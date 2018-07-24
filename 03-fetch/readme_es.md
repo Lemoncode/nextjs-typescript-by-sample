@@ -40,7 +40,7 @@ import fetch from 'isomorphic-unfetch';
 const baseRoot = 'https://api.github.com/orgs/lemoncode';
 const userCollectionURL = `${baseRoot}/members`
 
-const getUserCollection =  async () => {
+export const getUserCollection =  async () => {
   const res = await fetch(userCollectionURL)
   const data = await res.json();
 
@@ -48,8 +48,6 @@ const getUserCollection =  async () => {
     ({id, login, avatar_url,}) => ({ id, login, avatar_url, } as UserEntity)
   );
 }
-
-export default getUserCollection;
 ```
 - Vamos a consumir los datos en nuestra página principal, primero simplemente mostraremos por consola el resultado de la llamada a la api. Una cosa importante a remarcar, vamos a hacer uso de getInitialProps que nos permite realizar una llamada desde el lado del servidor o del cliente.
 
@@ -57,7 +55,7 @@ export default getUserCollection;
 + import * as React from 'react';
 import Link from 'next/link';
 + import * as Next from 'next';
-+ import getUserCollection from '../rest-api/github';
++ import { getUserCollection } from '../rest-api/github';
 + import { UserEntity } from '../model/user';
 
 - const myLanguage = "Typescript";
