@@ -3,11 +3,11 @@
 One of the goals of supporting server side rendering is to obtain good SEO results. One of the basic pilars of SEO consists on generating
 friendly URL's, right now in the user detail page we are generating something like:
 
-http://localhost:3000/user-info?id=1457912
+http://localhost:3000/user-info?login=brauliodiez
 
 It would be better to rewrite the URL and display it in the following way:
 
-http://localhost:3000/user-info/id/1457912
+http://localhost:3000/user-info/login/brauliodiez
 
 We will do that in two steps:
   - Support this friendly url on the client side.
@@ -29,7 +29,7 @@ _./pages/components/user-collection/row.tsx_
 ```diff
     <td>
 -      <Link href={`/user-info?login=${props.user.login}`}>
-+      <Link as={`user-info/login/${props.user.login}`} href={`/user-info?id=${props.user.login}`}>
++      <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
         <a>{props.user.login}</a>
       </Link>    
     </td>
