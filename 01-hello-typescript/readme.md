@@ -76,7 +76,7 @@ module.exports = withTypescript({
 transpilation is working as expected.
 
 ```diff 
-+ const myLanguage = "Typescript";
++ const myLanguage : string = "Typescript";
 
 const Index = () => (
   <div>
