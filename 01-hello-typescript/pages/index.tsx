@@ -1,5 +1,5 @@
 
-const myLanguage = "Typescript";
+const myLanguage : string = "Typescript";
 
 const Index = () => (
   <div>

@@ -23,7 +23,7 @@ const Index : Next.NextSFC<Props> = (props) => (
 
 Index.getInitialProps = async () =>  {
   const data = await getUserCollection();
-
+  console.log(data);
   return {
     userCollection: data,
   }

@@ -31,7 +31,7 @@ _./pages/components/user-collection/row.tsx_
 
 ```diff
     <td>
-+     <Link href={`/user-info?id=${props.user.id}`}>
++     <Link href={`/user-info?login=${props.user.login}`}>
 -      <span>{props.user.login}</span>
 +      <a>{props.user.login}</a>
 +     </Link>        
@@ -50,7 +50,7 @@ _./pages/user-info-tsx_
 + const UserInfoPage = withRouter((props) => (
   <div>
     <h2>I'm the user info page</h2>    
-+   <h3>{props.router.query.id}</h3>    
++   <h3>{props.router.query.login}</h3>    
   </div>
 -);
 +));
@@ -72,7 +72,7 @@ _./pages/components/user-collection/row.tsx_
     <td>
 + <Link href={`/user-info?id=${props.user.id}&name=${props.user.login}`}>
 - <Link href={`/user-info?id=${props.user.id}`}>     
-+     <a>{props.user.login}</a>
+     <a>{props.user.login}</a>
 + </Link>        
     </td>
 ```
@@ -87,8 +87,8 @@ _./pages/user-info-tsx_
 const UserInfoPage = withRouter((props) => (
   <div>
     <h2>I'm the user info page</h2>    
-   <h3>{props.router.query.id}</h3>
-+  <h3>{props.router.query.name}</h3>      
++  <h3>{props.router.query.id}</h3>
+   <h3>{props.router.query.login}</h3>      
   </div>
 
 ));
