@@ -18,8 +18,8 @@ const InnerUserInfoPage : Next.NextSFC<Props> = (props)  => (
   </div>
 );
 
-InnerUserInfoPage.getInitialProps = async (props) =>  {
-  const query = props.query;
+InnerUserInfoPage.getInitialProps = async (data) =>  {
+  const query = data.query;
   const id = query.id as string;
 
   const userDetail = await getUserDetail(id);  
