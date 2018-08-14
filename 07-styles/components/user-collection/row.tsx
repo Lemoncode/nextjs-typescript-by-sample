@@ -2,12 +2,14 @@ import * as React from 'react';
 import { UserEntity } from 'model/user';
 import Link from 'next/link';
 
+const classNames = require('./row.css');
+
 interface Props {
   user: UserEntity;
 }
 
 export const UserRow = (props: Props) =>
-  <tr>
+  <tr className={classNames.row}>
     <td>
       <img src={props.user.avatar_url} style={{ maxWidth: '10rem' }} />
     </td>
@@ -15,8 +17,8 @@ export const UserRow = (props: Props) =>
       <span>{props.user.id}</span>
     </td>
     <td>
-    <Link as={`user-info/id/${props.user.login}`} href={`/user-info?id=${props.user.login}`}>
+      <Link as={`user-info/id/${props.user.login}`} href={`/user-info?id=${props.user.login}`}>
         <a>{props.user.login}</a>
-      </Link>    
+      </Link>
     </td>
   </tr>

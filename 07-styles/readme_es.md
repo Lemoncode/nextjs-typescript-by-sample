@@ -165,3 +165,97 @@ module.exports = withCSS(withTypescript({
 
 - ... y comprobamos ahora las clases que se muestran en la consola del navegador para la fuente  ```_next/static/styles.css```, podemos corroborar que en lugar de la cadena hash ostentosamente más larga que había antes, ahora las clases tienen nombres que se ajustan al patrón indicado en ```cssLoaderOptions.localIdentName```.
 
+- Para dar finalmente por terminado el ejemplo, vamos a refactorizar nuestro código para aplicar un estilado más elegante a nuestra tabla de usuarios. Comenzamos con el fichero _./components/user-collection/header.css_, que modificamos tal cual sigue:
+```diff
+-.purple-box {
+-  border: 2px dotted purple;
+-}
+-
+-.bluebox {
+-  border: 3px solid blue;
+-}
++.header th{
++  background-color: #DDEFEF;
++  border: solid 1px #DDEEEE;
++  color: #336B6B;
++  padding: 10px;
++  text-align: left;
++  text-shadow: 1px 1px 1px #fff;
++}
+```
+
+- Acto seguido, creamos dos nuevos ficheros en el directorio _./components/user-collection/_, llamados _./components/user-collection/row.css_ y _./components/user-collection/user-table.css_, con los siguientes contenidos:
+- _./components/user-collection/row.css_
+```diff
++.row td {
++  border: solid 1px #DDEEEE;
++  color: #333;
++  padding: 10px;
++  text-shadow: 1px 1px 1px #fff;
++}
+```
+- _./components/user-collection/header.css_
+```diff
++.user-table {
++  border: solid 1px #DDEEEE;
++  border-collapse: collapse;
++  border-spacing: 0;
++  font: normal 13px Arial, sans-serif;
++}
+```
+
+- Y por último, modificamos los componentes para importar las nuevas reglas de estilo:
+- _./components/user-collection/header.tsx_
+```diff
+export const UserHeader = () =>
+-    <tr>
++    <tr className={classNames.header}>
+        <th>
+-            <div className={classNames.bluebox}>
+                Avatar
+-            </div>
+        </th>
+        <th>
+-            <div className={classNames['purple-box']}>
+                Id
+-            </div>
+        </th>
+```
+
+- _./components/user-collection/row.tsx_
+```diff
+import Link from 'next/link';
+
++const classNames = require('./row.css');
+
+interface Props {
+  user: UserEntity;
+}
+
+export const UserRow = (props: Props) =>
+-  <tr>
++  <tr className={classNames.row}>
+    <td>
+      <img src={props.user.avatar_url} style={{ maxWidth: '10rem' }} />
+    </td>
+    <td>
+```
+
+- _./components/user-collection/user-table.tsx_
+```diff
+import { UserRow } from "./row";
+
++const classNames = require('./user-table.css');
+
+interface Props {
+  userCollection: UserEntity[],
+}
+
+export const UserTable = (props : Props) =>
+-<table>
++<table className={classNames['user-table']}>
+  <thead>
+    <UserHeader />
+  </thead>
+  <tbody>
+```

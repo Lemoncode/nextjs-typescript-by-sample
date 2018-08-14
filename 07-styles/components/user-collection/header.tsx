@@ -3,16 +3,12 @@ import * as React from 'react';
 const classNames = require('./header.css');
 
 export const UserHeader = () =>
-    <tr>
+    <tr className={classNames.header}>
         <th>
-            <div className={classNames.bluebox}>
-                Avatar
-            </div>
+            Avatar
         </th>
         <th>
-            <div className={classNames['purple-box']}>
-                Id
-            </div>
+            Id
         </th>
         <th>
             Name

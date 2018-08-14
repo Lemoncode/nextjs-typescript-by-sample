@@ -1,8 +1,6 @@
-.header th{
-  background-color: #DDEFEF;
+.row td {
   border: solid 1px #DDEEEE;
-  color: #336B6B;
+  color: #333;
   padding: 10px;
-  text-align: left;
   text-shadow: 1px 1px 1px #fff;
 }
