@@ -1,7 +1,9 @@
 import * as React from 'react';
 
+const classNames = require('./header.css');
+
 export const UserHeader = () =>
-    <tr>
+    <tr className={classNames.header}>
         <th>
             Avatar
         </th>
