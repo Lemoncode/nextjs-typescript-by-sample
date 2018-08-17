@@ -13,12 +13,12 @@ Topics covered in this sample:
 - Fetching data from a remote api (cors enabled).
 - Navigating to anoterh pages passing parameters via query string.
 - Creating clean urls (seo friendly).
+- CSS Styling: Thanks to [arp82](https://github.com/arp82) for this great contribution.
 
 Topics that will be covered in future examples:
 
 - Debugging.
 - Deploying.
-- Styling.
 - Redux support.
 
 
