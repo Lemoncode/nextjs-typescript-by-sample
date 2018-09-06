@@ -15,9 +15,12 @@
     "@zeit/next-typescript": "^1.1.0",
     "express": "^4.16.3",
     "isomorphic-unfetch": "^2.0.0",
+    "jss": "^9.8.7",
     "next": "^6.1.1",
+    "prop-types": "^15.6.2",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "react-jss": "^8.6.1"
   },
   "devDependencies": {
     "@types/next": "^6.0.4",
