@@ -1,261 +1,130 @@
-# Añadiendo estilos con Next,js y CSS
+# Depurando NextJS con Visual Studio Code
 
-En este ejemplo, vamos a cubrir los aspectos básicos de la configuración de Next.js para incorporar estilos externamente en ficheros CSS
+En este ejemplo, vamos a cubrir los pasos básicos para poder depurar nuestra aplicación usando NextJS y VSCode
 
-# Paso para incluir archivos CSS
+# Depuración del lado del servidor
 
-- Tomaremos el ejemplo 06 como punto de partida.
-
-- Como de costumbre, el primer paso sería instalar las dependencias especificadas en el archivo package.json.
-
+- Vamos a comenzar este tutorial partiendo del ejemplo 07 (abriremos una nueva instancia de VSCode sobre una copia del mismo). Antes que nada, descargamos las dependencias necesarias
 ```bash
 npm install
 ```
 
-- Para poder utilizar archivos CSS en nuestra aplicación, nos hace falta añadir una nueva dependencia al proyecto. Concretamente, se trata del plugin ```next-css```
-```bash
-npm install --save @zeit/next-css
-```
-
-- Este plugin nos facilita una función ```withCSS``` que podemos invocar desde nuestro archivo de configuración ```next.config.js``` para añadir la funcionalidad necesaria para gestionar archivos CSS en nuestro empaquetado. Para ello, es necesario modificar nuestro fichero ```next.config.js``` tal cual sigue:
-```javascript
-// next.config.js
-const withTypescript = require('@zeit/next-typescript');
-const withCSS = require('@zeit/next-css');
-module.exports = withCSS(withTypescript({
-  webpack(config, options) {
-    return config
-  }
-}));
-```
-
-- Con esto ya podemos procesar archivos CSS. El siguiente paso sería crear unos estilos en un fichero externo para probarlo. Creamos pues un fichero ```global-styles.css``` dentro de una nueva carpeta llamada ```styles``` a nivel del raíz del proyecto. A continuación, poblamos dicho fichero con el siguiente contenido:
-```
-.blue-box {
-  border: 3px solid blue;
+- No nos va a hacer falta añadir ninguna línea de código para este ejemplo, sino que vamos a trabajar sobre los archivos de configuración de VSCode. Pinchamos sobre el icono de depuración que aparece al lado izquierdo de la ventana de VSCode para abrir el menú de depuración (o, alternativamente, usamos el atajo de teclado  ```Ctrl``` + ```Shift``` + ```D```). Podremos ver un menú desplegable sobre la columna izquierda de nuestra ventana de VSCode que indica ```No configuration```, justo a la derecha del botón verde de _play_. Haciendo click sobre este menú, veremos que no hay configuraciones de depuración disponibles (en principio), por lo que pinchamos en ```Add configuration...```. Esto abrirá un nuevo menú en la parte superior de nuestra instancia de VSCode. De principio, la única opción que debería aparecer en este nuevo menú sería la correspondiente a ```Node.js``` que viene por defecto con VSCode. Si la seleccionamos, se creará un fichero ```launch.json``` dentro de la carpeta ```.vscode``` en la carpeta que tengamos abierta. Los contenidos de este fichero deberían ser los siguientes:
+```json
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}\\index.js"
+    }
+  ]
 }
 ```
 
-- Y ahora hacemos uso de esta nueva clase en nuestra lista de usuarios. Por ejemplo, podemos aplicar la nueva regla de estilos a la columna 'Avatar' de nuestro componente cabecera.
+- Vamos a modificar los contenidos de este fichero para que el depurador de VSCode pueda engancharse a la parte de nuestro código de front-end que se renderiza en nuestro servidor.
 ```diff
-+import '../../styles/global-styles.css';
-export const UserHeader = () =>
-    <tr>
-        <th>
-+            <div className="blue-box">
-                Avatar
-+            </div>
-        </th>
-```
-
-- Si fueramos a lanzar nuestra aplicación ahora, no veríamos, sin embargo, ningún cambio. Esto se debe a que todavía no le hemos dicho a Next.js como deberíamos enlazar este nuevo recurso con nuestra aplicación web. Por defecto, ```next-css``` compila nuestros archivos CSS en ```.next/static/style.css```, y estos contenidos se sirven desde la siguiente url
-```
-/_next/static/style.css
-```
-
-- Por tanto, necesitamos indicarle a nuestra aplicación que use los estilos desde ese punto de entrada. Para conseguirlo, debemos indicarle a Next.js que utilice un documento personalizado como base, en el cual se indique mediante el uso de elementos ```link``` en la cabecera la fuente de entrada para nuestros estilos CSS. Podemos conseguir esto mediante la creación de un objeto ```_document.js``` (¡ojo, que debe llevar un guión bajo en el nombre!) dentro de nuestra carpeta ```pages```. Dicho archivo contendría el siguiente código:
-```diff
-+import Document, { Head, Main, NextScript } from 'next/document'
-+
-+export default class MyDocument extends Document {
-+  render() {
-+    return (
-+      <html>
-+        <Head>
-+          <link rel="stylesheet" href="/_next/static/style.css" />
-+        </Head>
-+        <body>
-+          <Main />
-+          <NextScript />
-+        </body>
-+      </html>
-+    )
-+  }
-+}
-```
-
-- Ahora sí que podemos lanzar nuestra app con ```npm run dev```, y comprobaremos que, efectivamente, la parte de la cabecera correspondiente a 'Avatar' queda encuadrada dentro de un rectángulo azúl.
-
-# Pasos para añadir CSS utilizando el modelo de CSS-Modules
-
-- Si queremos utilizar módulos CSS en nuestra aplicación, basta con habilitar el correspondiente flag en la configuración base de nuestro archivo ```next.config.js```.
-```diff
-module.exports = withCSS(withTypescript({
-+  cssModules: true,
-  webpack(config, options) {
-    return config;
-  }
-}));
-```
-
-- Tras hacer esto, podemos crear ahora un archivo ```header.css``` dentro de la carpeta del componente que renderiza la lista de usuarios, y anexarle a este archivo algunas reglas de estilo. Por ejemplo,
-```
-.purple-box {
-  border: 2px dotted purple;
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+-      "request": "launch",
+-      "name": "Launch Program",
+-      "program": "${workspaceFolder}\\index.js"
++      "request": "attach",
++      "name": "NextJS - Node",
++      "port": 9229,
+    }
+  ]
 }
 ```
 
-- Ahora podemos, por ejemplo, modificar nuestro componente cabecera para aplicar el nuevo estilo al elemento 'Id'. Resaltar que al haber utilizado kebab-case, necesitamos utilizar una propiedad calculada para acceder a la clase CSS en concreto.
+- El puerto que especifiquemos tiene que coincider con el que se utiliza para depurar aplicaciones de NodeJS, que por defecto es el 9229. En cualquier caso, necesitamos lanzar nuestra aplicación de tal modo que dicho puerto esté disponible para poder depurar el código. A efectos de este tutorial, vamos a crear un nuevo script NPM para gestionar esto. Abrimos nuestro ```package.json``` y añadimos la siguiente línea:
 ```diff
-+const classNames = require('./header.css');
-
-export const UserHeader = () =>
-    <tr>
-        <th>
-            <div className={classNames.bluebox}>
-                Avatar
-            </div>
-        </th>
-        <th>
-+            <div className={classNames['purple-box']}>
-                Id
-+            </div>
+ "scripts": {
+    "dev": "node server.js",
++   "debug": "node server.js --inspect",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
 ```
 
-- Si lanzamos nuestra aplicación, veremos que en efecto el elemento Id queda envuelto en un cuadro púrpura punteado. Además, el rectángulo azúl del elemento Avatar ha desaparecido. Esto es así debido a que ahora todos los CSS se compilan usando el patrón de módulo CSS. Por tanto, no podemos utilizar clases sólo con el nombre literal de la regla CSS en cuestión. De hecho, podemos comprobar que las dos clases creadas siguen estando en nuestra aplicación compilada. Basta con ir a la consola del navegador y mirar las fuentes para el archivo _next/static/style.css, que debe contener tanto la regla para el rectángulo azúl como el púrpura.
+- Si, por algún motivo, no pudieramos utilizar el puerto 9229, se puede definir un puerto alternativo sobre el flag inspect (```--inspect=12345```). Si arrancamos ahora nuestra aplicación usando el nuevo script (```npm run debug```), deberíamos poder ver en el terminal de la consola un mensaje que confirma que el websocket de depuración está disponible. De hecho, para asegurarnos de que esto es así, podemos ir a ```localhost:9229/json/version``` en nuestro navegador, y deberíamos de poder ver que se carga un JSON indicando detalles sobre la version de NodeJS que estamos utilizando.
 
-- Vamos a refactorizar un poco el código para dejar todos los estilos acordes al patrón de Módulos CSS. Borramos la carpeta ```styles``` anteriormente creada y en su lugar añadimos la regla del cuadro azúl a nuestro fichero ```header.css```. Además, le quitamos el guión de enmedio para no tener que utilizar una propiedad computada para referirlo en el componente.
-´´´diff
-.purple-box {
-  border: 2px dotted purple;
+- Dado que el puerto 9229 está ahora abierto para el depurar, podemos lanzar la configuración de depuración que habíamos definido previamente para acoplar nuestro depurador de VSCode a nuestro proceso NodeJS. Para ello, volvemos al menú de depuración y, sobre el menú desplegable, deberíamos poder ver el nombre de la configuración que habíamos definido (```NextJS - Node```). Si hacemos click en el botón de _play_, deberíamos ver cómo el depurador de VSCode se acopla con éxito a nuestros proceso Node.
+
+- Ahora vamos a añadir un punto de ruptura en el código, por ejemplo, en la línea 12 de _pages/index.ts_. Normalmente, el punto de ruptura aparecería en rojo, pero lo más probable es que aparezca como una circunferencia grisácea. Si abrimos nuestra aplicación en el navegador ```localhost:3000```, lo que esperaríamos que pasase sería que se detuviera la ejecución en el punto de ruptura que hemos habilitado. Sin embargo, lo más probable es que no ocurra así. Esto se debe a un problema en la forma en que VSCode detecta nuestros _sourcemaps_ (para más detalles, [consultar este enlace](https://github.com/Microsoft/vscode-recipes/issues/103)). Para solucionarlo, necesitamos modificar nuestro fichero ```launch.json``` ligeramente.
+```diff
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "NextJS - Node",
+      "port": 9229,
++     "sourceMapPathOverrides": {
++       "webpack:///*": "${workspaceRoot}/*",
++     }
+    }
+  ]
 }
-
-+.bluebox {
-+  border: 3px solid blue;
-+}
-´´´
-
-- Por último, refactorizamos el componente cabecera de forma acorde.
-```diff
-import * as React from 'react';
--import '../../styles/global-styles.css';
-
-const classNames = require('./header.css');
-
-export const UserHeader = () =>
-    <tr>
-        <th>
--            <div className="blue-box">
-+            <div className={classNames.bluebox}>
-                Avatar
-            </div>
-        </th>
-        <th>
-            <div className={classNames['purple-box']}>
-                Id
-            </div>
-        </th>
 ```
 
-- Ahora deberíamos de ser capaces de ver los dos estilos aplicados al unísono.
+- Con este cambio, si volvemos a lanzar nuestra tarea de depuración, ahora sí deberían verse los breakpoints del color rojo habitual y, efectivamente, si refrescamos la página principal que contiene la lista de usuarios, la ejecución se detendrá en la línea 12, conforme a lo esperado.
 
-- Para finalizar, la función ```withCSS``` básicamente nos ofrece azucarillo sintáctico en forma de composición funcional para simplificar la configuración de webpack que subyace. De hecho, internamente utiliza un ```css-loader``` para gestionar los ficheros CSS. Podemos indicar opciones de configuración propias de dicho módulo (ver [webpack's css loader options](https://github.com/webpack-contrib/css-loader#options) para más detalles), como, por ejemplo, añadir ids de ámbito local a nuestras clases CSS. Si modificamos el fichero ```next.config.js``` conforme a lo siguiente:
+- También destacar la peculiaridad de que si añadimos un _breakpoint_ en la línea 11 de _pages/user-info.tsx_, este punto de ruptura no se alcanzará como tal cuando naveguemos a la vista de detalles de usuario desde la tabla. No obstante, si refrescamos el navegador desde la vista de detalles de usuario, el punto de ruptura sí que detendrá la ejecución como sería de esperar.
+
+
+# Lanzar una instancia de depuración de Chrome desde VSCode.
+- Llegados a este punto somos capaces de acoplar el depurador de VSCode a la parte de nuestra aplicación NextJS que se renderiza en el lado del servidor. Sin embargo, si quisiéramos depurar las partes de la aplicación que se renderizan en el lado del cliente, necesitaríamos en principio utilizar el depurador del navegador. En este apartado, vamos a añadir una nueva configuración de depuración para lanzar una instancia del navegador de Chrome que ya esté conectado al depurador de VSCode. Para ello, antes que nada necesitamos instalar el plugin (```Debugger for Chrome```) correspondiente en nuestro entorno de VSCode.
+
+- Una vez hayamos instalado la extensión para el depurador de Chrome, procederemos a crear la configuración de depuración correspondiente. Vamos a modificar el fichero ```launch.json``` con las líneas siguientes:
 ```diff
-module.exports = withCSS(withTypescript({
-  cssModules: true,
-+  cssLoaderOptions: {
-+    importLoaders: 1,
-+    localIdentName: "[local]___[hash:base64:5]",
-+  },
-  webpack(config, options) {
-    return config;
-  }
-}));
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "NextJS - Node",
+      "port": 9229,
+      "sourceMapPathOverrides": {
+        "webpack:///*": "${workspaceRoot}/*",
+      }
+-   }
++   },
++   {
++     "type": "chrome",
++     "request": "launch",
++     "name": "NextJS - Chrome",
++     "url": "http://localhost:3000",
++     "webRoot": "${workspaceFolder}",
++     "sourceMapPathOverrides": {
++       "webpack:///*": "${webRoot}/*",
++     },
++   },
+  ]
 ```
 
-- ... y comprobamos ahora las clases que se muestran en la consola del navegador para la fuente  ```_next/static/styles.css```, podemos corroborar que en lugar de la cadena hash ostentosamente más larga que había antes, ahora las clases tienen nombres que se ajustan al patrón indicado en ```cssLoaderOptions.localIdentName```.
+- Si lanzamos ahora nuestra nueva configuración ```NextJS - Chrome``` desde el menú desplegable, veremos como se abre una nueva instancia del navegador Chrome, abriendo la url que hemos especificado en nuestro fichero ````launch.json```. Si habíamos mantenido activos los puntos de rupturas del apartado anterior, veremos que la ejecución se detendrá en este caso sin necesidad de refrescar el navegador, es decir, si navegamos desde la página principal a las páginas de detalle de cada usuario, la aplicación se detendrá como corresponde en los puntos de ruptura definidos. Esto es así porque ahora nuestro depurador está trabajando desde el lado del cliente, por lo que funciona de forma similar al consabido depurador del navegador, en lugar de responder únicamente a las cargas iniciales de la aplicación.
 
-- Para dar finalmente por terminado el ejemplo, vamos a refactorizar nuestro código para aplicar un estilado más elegante a nuestra tabla de usuarios. Comenzamos con el fichero _./components/user-collection/header.css_, que modificamos tal cual sigue:
+
+# Depurando en cliente y servidor a la vez
+- Por último, vamos a finalizar el tutorial con una nueva configuración de depuración que se va a encargar de aunar las dos configuraciones previamente definidas. Esto lo podemos conseguir definiendo un array en la propiedad ```compounds``` del fichero ```launch.json```, tal cual se detalla a continuación:
 ```diff
--.purple-box {
--  border: 2px dotted purple;
--}
--
--.bluebox {
--  border: 3px solid blue;
--}
-+.header th{
-+  background-color: #DDEFEF;
-+  border: solid 1px #DDEEEE;
-+  color: #336B6B;
-+  padding: 10px;
-+  text-align: left;
-+  text-shadow: 1px 1px 1px #fff;
-+}
+  "configurations": [
+    ...
+  ],
++ "compounds": [
++   {
++     "name": "NextJS - Full",
++     "configurations": ["NextJS - Node", "NextJS - Chrome"],
++   }
++ ],
 ```
 
-- Acto seguido, creamos dos nuevos ficheros en el directorio _./components/user-collection/_, llamados _./components/user-collection/row.css_ y _./components/user-collection/user-table.css_, con los siguientes contenidos:
-- _./components/user-collection/row.css_
-```diff
-+.row td {
-+  border: solid 1px #DDEEEE;
-+  color: #333;
-+  padding: 10px;
-+  text-shadow: 1px 1px 1px #fff;
-+}
-```
-- _./components/user-collection/header.css_
-```diff
-+.user-table {
-+  border: solid 1px #DDEEEE;
-+  border-collapse: collapse;
-+  border-spacing: 0;
-+  font: normal 13px Arial, sans-serif;
-+}
-```
-
-- Y por último, modificamos los componentes para importar las nuevas reglas de estilo:
-- _./components/user-collection/header.tsx_
-```diff
-export const UserHeader = () =>
--    <tr>
-+    <tr className={classNames.header}>
-        <th>
--            <div className={classNames.bluebox}>
-                Avatar
--            </div>
-        </th>
-        <th>
--            <div className={classNames['purple-box']}>
-                Id
--            </div>
-        </th>
-```
-
-- _./components/user-collection/row.tsx_
-```diff
-import Link from 'next/link';
-
-+const classNames = require('./row.css');
-
-interface Props {
-  user: UserEntity;
-}
-
-export const UserRow = (props: Props) =>
--  <tr>
-+  <tr className={classNames.row}>
-    <td>
-      <img src={props.user.avatar_url} style={{ maxWidth: '10rem' }} />
-    </td>
-    <td>
-```
-
-- _./components/user-collection/user-table.tsx_
-```diff
-import { UserRow } from "./row";
-
-+const classNames = require('./user-table.css');
-
-interface Props {
-  userCollection: UserEntity[],
-}
-
-export const UserTable = (props : Props) =>
--<table>
-+<table className={classNames['user-table']}>
-  <thead>
-    <UserHeader />
-  </thead>
-  <tbody>
-```
+- Esto creará una nueva configuración con el nombre ```NextJS - Full```, que, si la lanzamos, lanzará al unísono las dos configuraciones que habíamos definido en los apartados anteriores.
