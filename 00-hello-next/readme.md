@@ -51,4 +51,6 @@ export default Index;
 npm run dev
 ```
 
+- Open your web browser and navigate to _http://localhost:3000_
+
 - Now we can open a browser and point to: http://localhost:3000 and see the results.
