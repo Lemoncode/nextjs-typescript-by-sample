@@ -11,16 +11,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@zeit/next-typescript": "^1.1.0",
-    "express": "^4.16.3",
-    "isomorphic-unfetch": "^2.0.0",
-    "next": "^6.1.1",
+    "@zeit/next-typescript": "^1.1.1",
+    "express": "^4.16.4",
+    "isomorphic-unfetch": "^3.0.0",
+    "next": "^7.0.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1"
   },
   "devDependencies": {
-    "@types/next": "^6.0.4",
-    "@types/react": "^16.4.6",
+    "@types/next": "^7.0.5",
+    "@types/react": "^16.7.7",
     "typescript": "^2.9.2"
   }
 }
