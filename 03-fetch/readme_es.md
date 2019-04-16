@@ -42,7 +42,7 @@ import fetch from 'isomorphic-unfetch';
 const baseRoot = 'https://api.github.com/orgs/lemoncode';
 const userCollectionURL = `${baseRoot}/members`
 
-export const fetchUsers = async () => {
+export const fetchUsers = async (): Promise<User[]> => {
   const res = await fetch(userCollectionURL)
   const data = await res.json();
 

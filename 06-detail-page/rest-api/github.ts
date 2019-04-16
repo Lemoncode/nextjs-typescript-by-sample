@@ -1,27 +1,30 @@
-import { UserEntity } from '../model/user';
-import { UserDetailEntity } from '../model/user-detail';
+import { User } from '../model/user';
+import { UserDetail } from '../model/user-detail';
 import fetch from 'isomorphic-unfetch';
 
 const baseRoot = 'https://api.github.com';
 const userCollectionURL = `${baseRoot}/orgs/lemoncode/members`;
-const userDetailsURL = `${baseRoot}/users`;
+const userDetailURL = `${baseRoot}/users`;
 
-export const getUserCollection = async () => {
-  const res = await fetch(userCollectionURL)
+export const fetchUsers = async (): Promise<User[]> => {
+  const res = await fetch(userCollectionURL);
   const data = await res.json();
 
   return data.map(
-    ({ id, login, avatar_url, }) => ({ id, login, avatar_url, } as UserEntity)
+    ({ id, login, avatar_url }) => ({ id, login, avatar_url } as User)
   );
-}
+};
 
-export const getUserDetail = async (userlogin: string) : Promise<UserDetailEntity> => {
-  const fullUserDetailURL = `${userDetailsURL}/${userlogin}`;
-   
-  const res = await fetch(fullUserDetailURL)
-  const data = await res.json();
-  console.log(data);
-  const { id, login, avatar_url, name, company, followers } = data;
-  
-  return { id, login, avatar_url, name, company, followers };  
-}
+export const fetchUserDetail = async (user: string): Promise<UserDetail> => {
+  const res = await fetch(`${userDetailURL}/${user}`);
+  const { id, login, avatar_url, name, company, followers } = await res.json();
+
+  return {
+    id,
+    login,
+    avatar_url,
+    name,
+    company,
+    followers,
+  };
+};
