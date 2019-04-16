@@ -23,7 +23,7 @@ npm install @zeit/next-typescript --save
 - Y los typings.
 
 ```
-npm install @types/react --save-dev
+npm install typescript @types/react --save-dev
 ```
 
 - Necesitamos añadir una configuración typescript.
@@ -32,7 +32,6 @@ _./tsconfig.json_
 
 ```json
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
@@ -61,12 +60,24 @@ creemos un fichero _next.config.js_ file e incluyamos la configuración Typescri
 _./next.config.js_
 
 ```javascript
-const withTypescript = require('@zeit/next-typescript')
-module.exports = withTypescript({
-  webpack(config, options) {
-    return config
-  }
-})
+const withTypescript = require('@zeit/next-typescript');
+
+module.exports = withTypescript();
+
+```
+
+- Necesitamos configurar Babel para que funcione. Creamos un ./.babelrc en la carpeta raíz.  En este ejemplo vamos a utilizar el siguien .babelrc:
+
+_[./.babelrc](./.babelrc)_
+
+```json
+{
+  "presets": [
+    "next/babel",
+    "@zeit/next-typescript/babel"
+  ]
+}
+
 ```
 
 - Renombremos nuestro _index.js_ a _index.tsx_.
@@ -84,17 +95,6 @@ const Index = () => (
 );
 
 export default Index;
-```
-- Necesitamos configurar Babel para que funcione. Creamos un ./.babelrc en la carpeta raíz.  En este ejemplo vamos a utilizar el siguien .babelrc:
-
-_[./.babelrc](./.babelrc)_
-```json
-{
-  "presets": [
-    "next/babel",
-    "@zeit/next-typescript/babel"
-  ]
-}
 ```
 
 - Probemos el ejemplo

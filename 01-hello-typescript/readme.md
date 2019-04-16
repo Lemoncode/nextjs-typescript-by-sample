@@ -24,7 +24,7 @@ npm install @zeit/next-typescript --save
 - And the typings.
 
 ```
-npm install @types/react --save-dev
+npm install typescript @types/react --save-dev
 ```
 
 - We need to add a typescript configuration.
@@ -33,7 +33,6 @@ _./tsconfig.json_
 
 ```json
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
@@ -62,12 +61,24 @@ let's create a _next.config.js_ file and include the Typescript configuration.
 _./next.config.js_
 
 ```javascript
-const withTypescript = require('@zeit/next-typescript')
-module.exports = withTypescript({
-  webpack(config, options) {
-    return config
-  }
-})
+const withTypescript = require('@zeit/next-typescript');
+
+module.exports = withTypescript();
+
+```
+
+- Babel needs to be configured to work. We create ./.babelrc in the root folder. In this example, we use this .babelrc:
+
+_[./.babelrc](./.babelrc)_
+
+```json
+{
+  "presets": [
+    "next/babel",
+    "@zeit/next-typescript/babel"
+  ]
+}
+
 ```
 
 - Let's rename our _index.js_ to _index.tsx_.
@@ -81,23 +92,13 @@ transpilation is working as expected.
 const Index = () => (
   <div>
     <p>Hello Next.js</p>
-+    <p>From {myLanguage}</p>
++   <p>From {myLanguage}</p>
   </div>
 );
 
 export default Index;
 ```
-- Babel needs to be configured to work. We create ./.babelrc in the root folder. In this example, we use this .babelrc:
 
-_[./.babelrc](./.babelrc)_
-```json
-{
-  "presets": [
-    "next/babel",
-    "@zeit/next-typescript/babel"
-  ]
-}
-```
 - Let's try the sample
 
 ```bash
