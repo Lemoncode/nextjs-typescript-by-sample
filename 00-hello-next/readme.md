@@ -26,8 +26,8 @@ _package.json_
 
 ```diff
 "scripts": {
-+ "dev": "next",
-  "test": "echo \"Error: no test specified\" && exit 1"
+- "test": "echo \"Error: no test specified\" && exit 1"
++ "dev": "next"
 },
 ```
 
