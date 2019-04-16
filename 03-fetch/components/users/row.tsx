@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { UserEntity } from 'model/user';
+import * as Next from 'next';
+import { User } from '../../model/user';
 
 interface Props {
-  user: UserEntity;
+  user: User;
 }
 
-export const UserRow = (props: Props) =>
+export const Row: Next.NextStatelessComponent<Props> = (props) => (
   <tr>
     <td>
       <img src={props.user.avatar_url} style={{ maxWidth: '10rem' }} />
@@ -17,3 +17,4 @@ export const UserRow = (props: Props) =>
       <span>{props.user.login}</span>
     </td>
   </tr>
+)

@@ -23,7 +23,7 @@ npm install @zeit/next-typescript --save
 - Y los typings.
 
 ```
-npm install typescript @types/react --save-dev
+npm install typescript @types/next @types/react --save-dev
 ```
 
 - Necesitamos añadir una configuración typescript.

@@ -18,112 +18,110 @@ npm install isomorphic-unfetch --save
 ```
 
 
-- A continuación vamos a crear un modelo. 
+- A continuación vamos a crear un modelo.
 
 _./model/user.ts_
 
 ```typescript
-export interface UserEntity {
+export interface User {
   login: string;
   id: number;
   avatar_url: string;
 }
+
 ```
 
-- Vamos a crear una rest-api simple
+- Vamos a crear una rest-api simple:
+
 _./rest-api/github.ts_
 
 ```typescript
-import {UserEntity} from '../model/user';
+import { User } from '../model/user';
 import fetch from 'isomorphic-unfetch';
 
 const baseRoot = 'https://api.github.com/orgs/lemoncode';
 const userCollectionURL = `${baseRoot}/members`
 
-export const getUserCollection =  async () => {
+export const fetchUsers = async () => {
   const res = await fetch(userCollectionURL)
   const data = await res.json();
 
   return data.map(
-    ({id, login, avatar_url,}) => ({ id, login, avatar_url, } as UserEntity)
+    ({ id, login, avatar_url, }) => ({ id, login, avatar_url, } as User)
   );
 }
+
 ```
+
 - Vamos a consumir los datos en nuestra página principal, primero simplemente mostraremos por consola el resultado de la llamada a la api. Una cosa importante a remarcar, vamos a hacer uso de getInitialProps que nos permite realizar una llamada desde el lado del servidor o del cliente.
 
+_./pages/index.tsx_
+
 ```diff
-+ import * as React from 'react';
-import Link from 'next/link';
 + import * as Next from 'next';
-+ import { getUserCollection } from '../rest-api/github';
-+ import { UserEntity } from '../model/user';
+import Link from 'next/link';
++ import { fetchUsers } from '../rest-api/github';
++ import { User } from '../model/user';
 
 - const myLanguage = "Typescript";
 
 + interface Props {
-+  userCollection: UserEntity[],
++   users: User[];
 + }
 
 - const Index = () => (
-+ const Index : Next.NextSFC<Props> = (props) => (
++ const Index: Next.NextStatelessComponent<Props> = (props) => (
   <div>
     <p>Hello Next.js</p>
--    <p>From {myLanguage}</p>
+-   <p>From {myLanguage}</p>
     <Link href="/user-info">
       <a>Navigate to user info page</a>
     </Link>
-
   </div>
 );
 
-+ Index.getInitialProps = async () =>  {
-+ const data = await getUserCollection();
-+
-+  return {
-+    userCollection: data,
-+  }
++ Index.getInitialProps = async () => {
++   const users = await fetchUsers();
++   console.log(users);
+
++   return {
++     users,
++   }
 + }
 
 export default Index;
 ```
 
-- Ahora si colocamos un  _console.log(data);_ justo después de 
-_const data = await getUserCollection();_ aunque no se vea en el navegador el
-resultado se mostrará en la consola del servidor.
+> Ahora si colocamos un  _console.log(data);_ justo después de 
+> _fetch_ aunque no se vea en el navegador el resultado se mostrará en la consola del servidor.
+> Pero si navegamos a `user-info` y después volvemos, veremos que se ejecuta en cliente.
 
-- Ahora que tenemos la parte del consumo de datos vamos a comenzar con la parte
-UI.
+- Ahora que tenemos la parte del consumo de datos vamos a comenzar con la parte UI.
 
-_./components/user-collection/header.tsx_
+_./components/users/header.tsx_
 
 ```typescript
-import * as React from 'react';
+export const Header = () => (
+  <tr>
+    <th>Avatar</th>
+    <th>Id</th>
+    <th>Name</th>
+  </tr>
+)
 
-export const UserHeader = () =>
-    <tr>
-        <th>
-            Avatar
-        </th>
-        <th>
-            Id
-        </th>
-        <th>
-            Name
-        </th>
-    </tr>
 ```
 
-_./components/user-collection/row.tsx_
+_./components/users/row.tsx_
 
 ```typescript
-import * as React from 'react';
-import { UserEntity } from 'model/user';
+import * as Next from 'next';
+import { User } from '../../model/user';
 
 interface Props {
-  user: UserEntity;
+  user: User;
 }
 
-export const UserRow = (props: Props) =>
+export const Row: Next.NextStatelessComponent<Props> = (props) => (
   <tr>
     <td>
       <img src={props.user.avatar_url} style={{ maxWidth: '10rem' }} />
@@ -135,141 +133,115 @@ export const UserRow = (props: Props) =>
       <span>{props.user.login}</span>
     </td>
   </tr>
+)
+
 ```
 
-_./components/user-collection/user-table.tsx_
+_./components/users/table.tsx_
 
 ```typescript
-import { UserEntity } from "model/user";
-import { UserHeader } from "./header";
-import { UserRow } from "./row";
+import * as Next from 'next';
+import { User } from '../../model/user';
+import { Header } from './header';
+import { Row } from './row';
 
 interface Props {
-  userCollection: UserEntity[],
+  users: User[];
 }
 
-export const UserTable = (props : Props) => 
-<table>
-<thead>
-  <UserHeader />
-</thead>
-<tbody>
-  {
-    props.userCollection.map((user: UserEntity) =>
-      <UserRow user={user} key={user.id} />
-    )
-  }
-</tbody>
-</table>
+export const Table: Next.NextStatelessComponent<Props> = (props) => (
+  <table>
+    <thead>
+      <Header />
+    </thead>
+    <tbody>
+      {
+        props.users.map(user => (
+          <Row key={user.id} user={user} />
+        ))
+      }
+    </tbody>
+  </table>
+)
+
 ```
 
-_./components/user-collection/index.ts_
+_./components/users/index.ts_
 
 ```typescript
-export {UserTable} from './user-table';
+export * from './table';
+
 ```
 
-- Let's update the page.
+- Actualicemos la página.
 
 _./pages/index.tsx_
 
 ```diff
-import * as React from 'react';
-import * as Next from 'next';
-import Link from 'next/link';
-import getUserCollection from '../rest-api/github';
-import { UserEntity } from 'model/user';
-+ import {UserTable} from '../components/user-collection';
+...
+import { User } from '../model/user';
++ import { Table } from '../components/users';
 
+...
 
-interface Props {
-  userCollection: UserEntity[],
-}
-
-const Index : Next.NextSFC<Props> = (props) => (
+const Index: Next.NextStatelessComponent<Props> = (props) => (
   <div>
-  <p>Hello Next.js</p>
+    <p>Hello Next.js</p>
++   <Table users={props.users} />
+    <Link href="/user-info">
+      <a>Navigate to user info page</a>
+    </Link>
+  </div>
+);
+...
 
-+  <UserTable userCollection={props.userCollection}/>
-
-  <Link href="/user-info">
-    <a>Navigate to user info page</a>
-  </Link>
-</div>
-)
-
-Index.getInitialProps = async () =>  {
-  const data = await getUserCollection();
-
-  return {
-    userCollection: data,
-  }
-}
 ```
 
 ## Apendice
 
 Si preferimos mantener la lista de usuarios en el estado del componente en lugar de en las propiedades, podemos hacerlo de la siguiente manera:
 
+_./pages/index.tsx_
 
-```typescript
-import * as React from 'react';
+```diff
++ import * as React from 'react';
+import * as Next from 'next';
 import Link from 'next/link';
-import getUserCollection from '../rest-api/github';
-import {UserEntity} from '../model/user'
-import { UserTable } from './components/user-collection';
-
+import { fetchUsers } from '../rest-api/github';
+import { User } from '../model/user';
+import { Table } from '../components/users';
 
 interface Props {
-  userCollection: UserEntity[],  
+  users: User[];
 }
 
-interface State {
-  myStateCollection : UserEntity[];
-}
+- const Index: Next.NextStatelessComponent<Props> = (props) => (
++ const Index: Next.NextStatelessComponent<Props> = (props) => {
++   const [users] = React.useState(props.users);
++   console.log('Rendering users');
 
-export class Index extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {myStateCollection: []}
-    console.log("test ****************************");
-  }
-
-  static async getInitialProps() {
-    console.log("getInitialProps ****************************");
-    const data = await getUserCollection();
-  
-    return {
-      userCollection: data,  
-    }
-    
-  }
-
-  static getDerivedStateFromProps(nextProps : Props, prevState : State) : State {    
-    if(nextProps.userCollection !== prevState.myStateCollection) {
-      return ({
-        myStateCollection: nextProps.userCollection,
-      })
-    } else {
-      return null;
-    }
-  }
-
-  render() {
-    return (
++   return (
       <div>
         <p>Hello Next.js</p>
-
-        <UserTable userCollection={this.state.myStateCollection}/>
-
+-       <Table users={props.users} />
++       <Table users={users} />
         <Link href="/user-info">
           <a>Navigate to user info page</a>
         </Link>
       </div>
-    )
+    );
++ }
+
+Index.getInitialProps = async () => {
+  const users = await fetchUsers();
+- console.log(users);
++ console.log('Initial Props');
+  
+  return {
+    users,
   }
 }
 
-
 export default Index;
+
 ```
