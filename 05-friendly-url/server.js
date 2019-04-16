@@ -11,7 +11,7 @@ app
     const server = express();
 
     server.get('/user-info/login/:login', (req, res) => {
-      return app.render(req, res, 'user-info', { login: req.params.login });
+      return app.render(req, res, '/user-info', { login: req.params.login });
     });
 
     server.get('*', (req, res) => {
