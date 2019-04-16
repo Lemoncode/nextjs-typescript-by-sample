@@ -15,7 +15,7 @@ export const Row: Next.NextStatelessComponent<Props> = (props) => (
       <span>{props.user.id}</span>
     </td>
     <td>
-      <Link href={`/user-info?login=${props.user.login}`}>
+      <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
         <a>{props.user.login}</a>
       </Link>
     </td>

@@ -24,15 +24,17 @@ npm install
 ```
 - Let's update our _row.tsx_ component to use a link alias.
 
-_./pages/components/user-collection/row.tsx_
+_./pages/components/users/row.tsx_
 
 ```diff
     <td>
--      <Link href={`/user-info?login=${props.user.login}`}>
-+      <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
+-     <Link href={`/user-info?login=${props.user.login}`}>
++     <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
         <a>{props.user.login}</a>
       </Link>    
     </td>
+...
+
 ```
 
 - Let's run the sample and check how it works:
@@ -56,30 +58,32 @@ npm install express --save
 _./server.js_
 
 ```javascript
-const express = require('express')
-const next = require('next')
+const express = require('express');
+const next = require('next');
 
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev });
+const handler = app.getRequestHandler();
 
-app.prepare()
-.then(() => {
-  const server = express()
+app
+  .prepare()
+  .then(() => {
+    const server = express();
 
-  server.get('*', (req, res) => {
-    return handle(req, res)
+    server.get('*', (req, res) => {
+      return handler(req, res);
+    });
+
+    server.listen(3000, err => {
+      if (err) throw err;
+      console.log('> Ready on http://localhost:3000');
+    });
   })
+  .catch(ex => {
+    console.error(ex.stack);
+    process.exit(1);
+  });
 
-  server.listen(3000, (err) => {
-    if (err) throw err
-    console.log('> Ready on http://localhost:3000')
-  })
-})
-.catch((ex) => {
-  console.error(ex.stack)
-  process.exit(1)
-})
 ```
 
 > in this file we just create a next app and listen to any request, this request will just be handled by the next app.
@@ -90,9 +94,8 @@ _./package.json_
 
 ```diff
   "scripts": {
--    "dev": "next",
-+    "dev": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+-    "dev": "next"
++    "dev": "node server.js"
   },
 ```
 
@@ -104,38 +107,28 @@ npm run dev
 
 - Now let's add a get case for the new friendly url we have created.
 
+_./server.js_
+
 ```diff
-const express = require('express')
-const next = require('next')
+...
 
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
+app
+  .prepare()
+  .then(() => {
+    const server = express();
 
-app.prepare()
-.then(() => {
-  const server = express()
++   server.get('/user-info/login/:login', (req, res) => {
++     return app.render(req, res, 'user-info', { login: req.params.login });
++   });
 
-+ server.get('/user-info/login/:login', (req, res) => {
-+   const actualPage = '/user-info';
-+   const queryParams = {login: req.params.login};
-+   app.render(req, res, actualPage, queryParams);
-+ })
+    server.get('*', (req, res) => {
+      return handler(req, res);
+    });
+...
 
-  server.get('*', (req, res) => {
-    return handle(req, res)
-  })
-
-  server.listen(3000, (err) => {
-    if (err) throw err
-    console.log('> Ready on http://localhost:3000')
-  })
-})
-.catch((ex) => {
-  console.error(ex.stack)
-  process.exit(1)
-})
 ```
+
+> NOTE: Important, you have to declare this route before `*`.
 
 - If we run the code now, we're going to get the right behavior after we refresh the page.
 
