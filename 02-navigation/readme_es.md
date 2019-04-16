@@ -16,11 +16,12 @@ _./pages/user-info.tsx_
 ```typescript
 const UserInfoPage = () => (
   <div>
-    <h2>I'm the user info page</h2>    
+    <h2>I'm the user infopage</h2>
   </div>
-);
+)
 
 export default UserInfoPage;
+
 ```
 
 - Ahora para poder añadir una navegación satisfactoria tanto en el cliente como en el servidor debemos envolver la navegación mediante nextjs para poder manejar la navegación de forma global.
@@ -29,16 +30,17 @@ export default UserInfoPage;
 _./pages/index.tsx_
 
 ```diff
-const myLanguage = "Typescript";
 + import Link from 'next/link';
+
+const myLanguage: string = "Typescript";
 
 const Index = () => (
   <div>
     <p>Hello Next.js</p>
     <p>From {myLanguage}</p>
-+    <Link href="/user-info">
-+      <a>Navegar a la página de información del usuario</a>
-+    </Link>    
++   <Link href="/user-info">
++     <a>Navigate to user info page</a>
++   </Link>    
   </div>
 );
 
@@ -54,3 +56,4 @@ npm run dev
 ```
 
 > Ahora puedes observar que hay navegación entre cliente y servidor. Además el histórico del navegador se rellena con dicha navegación.
+> Ver diferencias si usamos el elemento `a`.

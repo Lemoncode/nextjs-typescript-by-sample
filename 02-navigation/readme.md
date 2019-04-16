@@ -18,29 +18,30 @@ _./pages/user-info.tsx_
 ```typescript
 const UserInfoPage = () => (
   <div>
-    <h2>I'm the user info page</h2>    
+    <h2>I'm the user infopage</h2>
   </div>
-);
+)
 
 export default UserInfoPage;
+
 ```
 
-- Now in order to add some useful navigation in both client and server side we can wrap a navigation ancho with a nextjs
-hoc to handle navigatin in an universal way.
+- Now in order to add some useful navigation in both client and server side we can wrap a navigation ancho with a nextjs hoc to handle navigatin in an universal way.
 
 _./pages/index.tsx_
 
 ```diff
-const myLanguage = "Typescript";
 + import Link from 'next/link';
+
+const myLanguage: string = "Typescript";
 
 const Index = () => (
   <div>
     <p>Hello Next.js</p>
     <p>From {myLanguage}</p>
-+    <Link href="/user-info">
-+      <a>Navigate to user info page</a>
-+    </Link>    
++   <Link href="/user-info">
++     <a>Navigate to user info page</a>
++   </Link>    
   </div>
 );
 
@@ -57,3 +58,4 @@ npm run dev
 ```
 
 > Now you can notice, navigation is done client side, plus browser history is informed on each navigation.
+> See differences using `a` element.
