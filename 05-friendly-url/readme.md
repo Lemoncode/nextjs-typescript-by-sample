@@ -22,6 +22,7 @@ We will do that in two steps:
 ```bash
 npm install
 ```
+
 - Let's update our _row.tsx_ component to use a link alias.
 
 _./pages/components/users/row.tsx_
