@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const myLanguage = "Typescript";
+const myLanguage: string = "Typescript";
 
 const Index = () => (
   <div>
@@ -9,7 +9,6 @@ const Index = () => (
     <Link href="/user-info">
       <a>Navigate to user info page</a>
     </Link>
-
   </div>
 );
 

@@ -1,31 +1,28 @@
-import * as React from 'react';
 import * as Next from 'next';
 import Link from 'next/link';
-import { getUserCollection } from '../rest-api/github';
-import {UserTable} from '../components/user-collection';
-import { UserEntity } from 'model/user';
+import { fetchUsers } from '../rest-api/github';
+import { User } from '../model/user';
+import { Table } from '../components/users';
 
 interface Props {
-  userCollection: UserEntity[],
+  users: User[];
 }
 
-const Index : Next.NextSFC<Props> = (props) => (
+const Index: Next.NextStatelessComponent<Props> = (props) => (
   <div>
-  <p>Hello Next.js</p>
+    <p>Hello Next.js</p>
+    <Table users={props.users} />
+    <Link href="/user-info">
+      <a>Navigate to user info page</a>
+    </Link>
+  </div>
+);
 
-  <UserTable userCollection={props.userCollection}/>
-
-  <Link href="/user-info">
-    <a>Navigate to user info page</a>
-  </Link>
-</div>
-)
-
-Index.getInitialProps = async () =>  {
-  const data = await getUserCollection();
+Index.getInitialProps = async () => {
+  const users = await fetchUsers();
 
   return {
-    userCollection: data,
+    users,
   }
 }
 

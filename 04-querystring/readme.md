@@ -17,36 +17,40 @@ npm install
 
 - Let's first add a _link_ import.
 
-_./pages/components/user-collection/row.tsx_
+_./pages/components/users/row.tsx_
 
 ```diff
-import * as React from 'react';
-import { UserEntity } from 'model/user';
+import * as Next from 'next';
 + import Link from 'next/link';
+import { User } from '../../model/user';
+...
+
 ```
 
 - Now lets add the link:
 
-_./pages/components/user-collection/row.tsx_
+_./pages/components/users/row.tsx_
 
 ```diff
     <td>
 +     <Link href={`/user-info?login=${props.user.login}`}>
--      <span>{props.user.login}</span>
-+      <a>{props.user.login}</a>
+-       <span>{props.user.login}</span>
++       <a>{props.user.login}</a>
 +     </Link>        
     </td>
+...
+
 ```
 
 - Now let's read the query string param from the _user-info_ page, in order to do that we will
 make use of _nextjs_ _withRouter_ HOC.
 
-_./pages/user-info-tsx_
+_./pages/user-info.tsx_
 
 ```diff
-+ import {withRouter} from 'next/router';
++ import { withRouter } from 'next/router';
 
-- const Index = () => (
+- const UserInfoPage = () => (
 + const UserInfoPage = withRouter((props) => (
   <div>
     <h2>I'm the user info page</h2>    
@@ -56,7 +60,7 @@ _./pages/user-info-tsx_
 +));
 
 export default UserInfoPage;
-``` 
+```
 
 - Let's run the sample.
 
@@ -64,37 +68,37 @@ export default UserInfoPage;
 npm run dev
 ```
 
-If you want to play a little bit more with query string just add
+- If you want to play a little bit more with query string just add:
 
-_./pages/components/user-collection/row.tsx_
+_./pages/components/users/row.tsx_
 
 ```diff
     <td>
-+ <Link href={`/user-info?id=${props.user.id}&name=${props.user.login}`}>
-- <Link href={`/user-info?id=${props.user.id}`}>     
-     <a>{props.user.login}</a>
-+ </Link>        
+-     <Link href={`/user-info?login=${props.user.login}`}>     
++     <Link href={`/user-info?id=${props.user.id}&login=${props.user.login}`}>
+        <a>{props.user.login}</a>
+      </Link>        
     </td>
 ```
-And later to see other parameter captured from the query string add this:
 
-_./pages/user-info-tsx_
+- And later to see other parameter captured from the query string add this:
+
+_./pages/user-info.tsx_
 
 ```diff
- import {withRouter} from 'next/router';
-
+import { withRouter } from 'next/router';
 
 const UserInfoPage = withRouter((props) => (
   <div>
-    <h2>I'm the user info page</h2>    
-+  <h3>{props.router.query.id}</h3>
-   <h3>{props.router.query.login}</h3>      
+    <h2>I'm the user infopage</h2>
++   <h3>{props.router.query.id}</h3>
+    <h3>{props.router.query.login}</h3>
   </div>
-
 ));
 
 export default UserInfoPage;
-``` 
+```
+
 - Let's run the sample again.
 
 ```bash

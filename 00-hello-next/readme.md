@@ -26,8 +26,8 @@ _package.json_
 
 ```diff
 "scripts": {
-+ "dev": "next",
-  "test": "echo \"Error: no test specified\" && exit 1"
+- "test": "echo \"Error: no test specified\" && exit 1"
++ "dev": "next"
 },
 ```
 
@@ -52,5 +52,3 @@ npm run dev
 ```
 
 - Open your web browser and navigate to _http://localhost:3000_
-
-- Now we can open a browser and point to: http://localhost:3000 and see the results.

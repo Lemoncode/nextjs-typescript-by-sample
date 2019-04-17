@@ -2,11 +2,11 @@
 
 Uno de los objetivos que tenemos a la hora de implementar server side rendering es poder obtener buenos resultados en SEO. Uno de sus pilares es generar URLS amigables. Si vamos al "user detail page" podremos ver que se esta generando algo como:
 
-http://localhost:3000/user-info?id=1457912
+http://localhost:3000/user-info?login=brauliodiez
 
 De otra manera se podría reescribir la URL mostrándola así:
 
-http://localhost:3000/user-info/id/1457912
+http://localhost:3000/user-info/login/brauliodiez
 
 Podemos hacer esto en dos pasos:
   - Dar soporte a la URL amigable en el lado del cliente.
@@ -23,15 +23,17 @@ npm install
 ```
 - Actualizaremos el componente  _row.tsx_  para usar un alias en nuestro enlace.
 
-_./pages/components/user-collection/row.tsx_
+_./pages/components/users/row.tsx_
 
 ```diff
     <td>
--      <Link href={`/user-info?id=${props.user.login}`}>
-+      <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
+-     <Link href={`/user-info?login=${props.user.login}`}>
++     <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
         <a>{props.user.login}</a>
       </Link>    
     </td>
+...
+
 ```
 
 - Ahora comprobamos como funciona ejecutando el ejemplo:
@@ -55,30 +57,32 @@ npm install express --save
 _./server.js_
 
 ```javascript
-const express = require('express')
-const next = require('next')
+const express = require('express');
+const next = require('next');
 
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev });
+const handler = app.getRequestHandler();
 
-app.prepare()
-.then(() => {
-  const server = express()
+app
+  .prepare()
+  .then(() => {
+    const server = express();
 
-  server.get('*', (req, res) => {
-    return handle(req, res)
+    server.get('*', (req, res) => {
+      return handler(req, res);
+    });
+
+    server.listen(3000, err => {
+      if (err) throw err;
+      console.log('> Ready on http://localhost:3000');
+    });
   })
+  .catch(ex => {
+    console.error(ex.stack);
+    process.exit(1);
+  });
 
-  server.listen(3000, (err) => {
-    if (err) throw err
-    console.log('> Ready on http://localhost:3000')
-  })
-})
-.catch((ex) => {
-  console.error(ex.stack)
-  process.exit(1)
-})
 ```
 
 > en este archivo solo hemos creado una aplicación "next" escuchando cualquier petición. Esta petición solo será controlada por la aplicación "next".
@@ -89,9 +93,8 @@ _./package.json_
 
 ```diff
   "scripts": {
--    "dev": "next",
-+    "dev": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+-    "dev": "next"
++    "dev": "node server.js"
   },
 ```
 
@@ -103,37 +106,25 @@ npm run dev
 
 - Añadiremos un "server.get" para la nueva URL amigable que hemos creado.
 
+_./server.js_
+
 ```diff
-const express = require('express')
-const next = require('next')
+...
 
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
+app
+  .prepare()
+  .then(() => {
+    const server = express();
 
-app.prepare()
-.then(() => {
-  const server = express()
++   server.get('/user-info/login/:login', (req, res) => {
++     return app.render(req, res, '/user-info', { login: req.params.login });
++   });
 
-+ server.get('/user-info/login/:login', (req, res) => {
-+   const actualPage = '/user-info';
-+   const queryParams = {login: req.params.login};
-+   app.render(req, res, actualPage, queryParams);
-+ })
+    server.get('*', (req, res) => {
+      return handler(req, res);
+    });
+...
 
-  server.get('*', (req, res) => {
-    return handle(req, res)
-  })
-
-  server.listen(3000, (err) => {
-    if (err) throw err
-    console.log('> Ready on http://localhost:3000')
-  })
-})
-.catch((ex) => {
-  console.error(ex.stack)
-  process.exit(1)
-})
 ```
 
 - Ahora si ejecutamos el código vamos a ver que la URL amigable funciona de manera correcta, una vez que refresquemos la página.

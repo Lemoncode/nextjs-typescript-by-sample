@@ -1,35 +1,31 @@
-import { withRouter } from 'next/router';
-import { getUserDetail } from '../rest-api/github';
-import { UserDetailEntity } from '../model/user-detail';
+import * as Next from 'next';
+import { fetchUserDetail } from '../rest-api/github';
+import { UserDetail } from '../model/user-detail';
 
 interface Props {
-  userId : string;
-  userDetail : UserDetailEntity;
+  login: string;
+  userDetail: UserDetail;
 }
 
-const InnerUserInfoPage : Next.NextSFC<Props> = (props)  => (
+const UserInfoPage: Next.NextStatelessComponent<Props> = props => (
   <div>
-    <h2>I'm the user info page</h2>      
-    <p>User ID Selected: {props.userId}</p> 
+    <h2>I'm the user infopage</h2>
+    <p>User ID: {props.userDetail.id}</p>
     <img src={props.userDetail.avatar_url} style={{ maxWidth: '10rem' }} />
-    <p>User name: {props.userDetail.name}</p>  
-    <p>Company: {props.userDetail.company}</p>  
-    <p>Followers: {props.userDetail.followers}</p>  
+    <p>User name: {props.login}</p>
+    <p>Company: {props.userDetail.company}</p>
+    <p>Followers: {props.userDetail.followers}</p>
   </div>
 );
 
-InnerUserInfoPage.getInitialProps = async (data) =>  {
-  const query = data.query;
-  const id = query.id as string;
+UserInfoPage.getInitialProps = async props => {
+  const login = props.query.login as string;
+  const userDetail = await fetchUserDetail(login);
 
-  const userDetail = await getUserDetail(id);  
-
-  return {    
-    userId: id,
-    userDetail
-  }
-}
-
-const UserInfoPage = withRouter(InnerUserInfoPage);
+  return {
+    login,
+    userDetail,
+  };
+};
 
 export default UserInfoPage;

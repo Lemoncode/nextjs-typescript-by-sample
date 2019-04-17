@@ -13,23 +13,28 @@ npm install
 ```
 
 - Para poder utilizar archivos CSS en nuestra aplicación, nos hace falta añadir una nueva dependencia al proyecto. Concretamente, se trata del plugin ```next-css```
+
 ```bash
-npm install --save @zeit/next-css
+npm install @zeit/next-css --save
 ```
 
 - Este plugin nos facilita una función ```withCSS``` que podemos invocar desde nuestro archivo de configuración ```next.config.js``` para añadir la funcionalidad necesaria para gestionar archivos CSS en nuestro empaquetado. Para ello, es necesario modificar nuestro fichero ```next.config.js``` tal cual sigue:
-```javascript
-// next.config.js
+
+_./next.config.js_
+
+```diff
 const withTypescript = require('@zeit/next-typescript');
-const withCSS = require('@zeit/next-css');
-module.exports = withCSS(withTypescript({
-  webpack(config, options) {
-    return config
-  }
-}));
++ const withCSS = require('@zeit/next-css');
+
+- module.exports = withTypescript();
++ module.exports = withTypescript(withCSS());
+
 ```
 
-- Con esto ya podemos procesar archivos CSS. El siguiente paso sería crear unos estilos en un fichero externo para probarlo. Creamos pues un fichero ```global-styles.css``` dentro de una nueva carpeta llamada ```styles``` a nivel del raíz del proyecto. A continuación, poblamos dicho fichero con el siguiente contenido:
+- Con esto ya podemos procesar archivos CSS. El siguiente paso sería crear unos estilos en un fichero externo para probarlo. Creamos pues un fichero ```global-styles.css```:
+
+_./styles/global-styles.css_
+
 ```
 .blue-box {
   border: 3px solid blue;
@@ -37,41 +42,52 @@ module.exports = withCSS(withTypescript({
 ```
 
 - Y ahora hacemos uso de esta nueva clase en nuestra lista de usuarios. Por ejemplo, podemos aplicar la nueva regla de estilos a la columna 'Avatar' de nuestro componente cabecera.
+
+_./components/users/header.tsx_
+
 ```diff
-+import '../../styles/global-styles.css';
-export const UserHeader = () =>
-    <tr>
-        <th>
-+            <div className="blue-box">
-                Avatar
-+            </div>
-        </th>
++ import '../../styles/global-styles.css';
+
+export const Header = () => (
+  <tr>
+-   <th>Avatar</th>
++   <th className="blue-box">Avatar</th>
+    <th>Id</th>
+    <th>Name</th>
+  </tr>
+)
+
 ```
 
 - Si fueramos a lanzar nuestra aplicación ahora, no veríamos, sin embargo, ningún cambio. Esto se debe a que todavía no le hemos dicho a Next.js como deberíamos enlazar este nuevo recurso con nuestra aplicación web. Por defecto, ```next-css``` compila nuestros archivos CSS en ```.next/static/style.css```, y estos contenidos se sirven desde la siguiente url
+
 ```
 /_next/static/style.css
 ```
 
 - Por tanto, necesitamos indicarle a nuestra aplicación que use los estilos desde ese punto de entrada. Para conseguirlo, debemos indicarle a Next.js que utilice un documento personalizado como base, en el cual se indique mediante el uso de elementos ```link``` en la cabecera la fuente de entrada para nuestros estilos CSS. Podemos conseguir esto mediante la creación de un objeto ```_document.js``` (¡ojo, que debe llevar un guión bajo en el nombre!) dentro de nuestra carpeta ```pages```. Dicho archivo contendría el siguiente código:
-```diff
-+import Document, { Head, Main, NextScript } from 'next/document'
-+
-+export default class MyDocument extends Document {
-+  render() {
-+    return (
-+      <html>
-+        <Head>
-+          <link rel="stylesheet" href="/_next/static/style.css" />
-+        </Head>
-+        <body>
-+          <Main />
-+          <NextScript />
-+        </body>
-+      </html>
-+    )
-+  }
-+}
+
+_./pages/\_document.js_
+
+```javascript
+import Document, { Head, Main, NextScript } from 'next/document';
+
+export default class MyDocument extends Document {
+  render() {
+    return (
+      <html>
+        <Head>
+          <link rel="stylesheet" href="/_next/static/css/styles.chunk.css" />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </html>
+    );
+  }
+}
+
 ```
 
 - Ahora sí que podemos lanzar nuestra app con ```npm run dev```, y comprobaremos que, efectivamente, la parte de la cabecera correspondiente a 'Avatar' queda encuadrada dentro de un rectángulo azúl.
@@ -79,183 +95,228 @@ export const UserHeader = () =>
 # Pasos para añadir CSS utilizando el modelo de CSS-Modules
 
 - Si queremos utilizar módulos CSS en nuestra aplicación, basta con habilitar el correspondiente flag en la configuración base de nuestro archivo ```next.config.js```.
+
+_./next.config.js_
+
 ```diff
-module.exports = withCSS(withTypescript({
-+  cssModules: true,
-  webpack(config, options) {
-    return config;
-  }
-}));
+const withTypescript = require('@zeit/next-typescript');
+const withCSS = require('@zeit/next-css');
+
+- module.exports = withTypescript(withCSS());
++ module.exports = withTypescript(
++   withCSS({
++     cssModules: true,
++     cssLoaderOptions: {
++       camelCase: true,
++     },
++   })
++ );
+
 ```
 
-- Tras hacer esto, podemos crear ahora un archivo ```header.css``` dentro de la carpeta del componente que renderiza la lista de usuarios, y anexarle a este archivo algunas reglas de estilo. Por ejemplo,
-```
+- Tras hacer esto, podemos crear ahora un archivo ```header.css``` dentro de la carpeta del componente que renderiza la lista de usuarios, y anexarle a este archivo algunas reglas de estilo. Por ejemplo:
+
+_./components/users/header.css_
+
+```css
 .purple-box {
   border: 2px dotted purple;
 }
 ```
 
 - Ahora podemos, por ejemplo, modificar nuestro componente cabecera para aplicar el nuevo estilo al elemento 'Id'. Resaltar que al haber utilizado kebab-case, necesitamos utilizar una propiedad calculada para acceder a la clase CSS en concreto.
-```diff
-+const classNames = require('./header.css');
 
-export const UserHeader = () =>
-    <tr>
-        <th>
-            <div className={classNames.bluebox}>
-                Avatar
-            </div>
-        </th>
-        <th>
-+            <div className={classNames['purple-box']}>
-                Id
-+            </div>
+_./components/users/header.tsx_
+
+```diff
+import '../../styles/global-styles.css';
++ const styles = require('./header.css');
+
+export const Header = () => (
+  <tr>
+    <th className="blue-box">Avatar</th>
+-   <th>Id</th>
++   <th className={styles.purpleBox}>Id</th>
+    <th>Name</th>
+  </tr>
+);
+
 ```
 
 - Si lanzamos nuestra aplicación, veremos que en efecto el elemento Id queda envuelto en un cuadro púrpura punteado. Además, el rectángulo azúl del elemento Avatar ha desaparecido. Esto es así debido a que ahora todos los CSS se compilan usando el patrón de módulo CSS. Por tanto, no podemos utilizar clases sólo con el nombre literal de la regla CSS en cuestión. De hecho, podemos comprobar que las dos clases creadas siguen estando en nuestra aplicación compilada. Basta con ir a la consola del navegador y mirar las fuentes para el archivo _next/static/style.css, que debe contener tanto la regla para el rectángulo azúl como el púrpura.
 
 - Vamos a refactorizar un poco el código para dejar todos los estilos acordes al patrón de Módulos CSS. Borramos la carpeta ```styles``` anteriormente creada y en su lugar añadimos la regla del cuadro azúl a nuestro fichero ```header.css```. Además, le quitamos el guión de enmedio para no tener que utilizar una propiedad computada para referirlo en el componente.
-´´´diff
+
+_./styles/global-styles.css_
+
+```diff
+- .blue-box {
+-   border: 3px solid blue;
+- }
+
+```
+
+_./components/users/header.css_
+
+```diff
 .purple-box {
   border: 2px dotted purple;
 }
 
-+.bluebox {
++.blue-box {
 +  border: 3px solid blue;
 +}
-´´´
+```
 
 - Por último, refactorizamos el componente cabecera de forma acorde.
+
+_./components/users/header.tsx_
+
 ```diff
-import * as React from 'react';
--import '../../styles/global-styles.css';
+- import '../../styles/global-styles.css';
+const styles = require('./header.css');
 
-const classNames = require('./header.css');
+export const Header = () => (
+  <tr>
+-   <th className="blue-box">Avatar</th>
++   <th className={styles.blueBox}>Avatar</th>
+    <th className={styles.purpleBox}>Id</th>
+    <th>Name</th>
+  </tr>
+);
 
-export const UserHeader = () =>
-    <tr>
-        <th>
--            <div className="blue-box">
-+            <div className={classNames.bluebox}>
-                Avatar
-            </div>
-        </th>
-        <th>
-            <div className={classNames['purple-box']}>
-                Id
-            </div>
-        </th>
 ```
 
 - Ahora deberíamos de ser capaces de ver los dos estilos aplicados al unísono.
 
 - Para finalizar, la función ```withCSS``` básicamente nos ofrece azucarillo sintáctico en forma de composición funcional para simplificar la configuración de webpack que subyace. De hecho, internamente utiliza un ```css-loader``` para gestionar los ficheros CSS. Podemos indicar opciones de configuración propias de dicho módulo (ver [webpack's css loader options](https://github.com/webpack-contrib/css-loader#options) para más detalles), como, por ejemplo, añadir ids de ámbito local a nuestras clases CSS. Si modificamos el fichero ```next.config.js``` conforme a lo siguiente:
+
+_./next.config.js_
+
 ```diff
-module.exports = withCSS(withTypescript({
-  cssModules: true,
-+  cssLoaderOptions: {
-+    importLoaders: 1,
-+    localIdentName: "[local]___[hash:base64:5]",
-+  },
-  webpack(config, options) {
-    return config;
-  }
-}));
+const withTypescript = require('@zeit/next-typescript');
+const withCSS = require('@zeit/next-css');
+
+module.exports = withTypescript(
+  withCSS({
+    cssModules: true,
+    cssLoaderOptions: {
+      camelCase: true,
++     importLoaders: 1,
++     localIdentName: '[local]___[hash:base64:5]',
+    },
+  })
+);
+
 ```
 
-- ... y comprobamos ahora las clases que se muestran en la consola del navegador para la fuente  ```_next/static/styles.css```, podemos corroborar que en lugar de la cadena hash ostentosamente más larga que había antes, ahora las clases tienen nombres que se ajustan al patrón indicado en ```cssLoaderOptions.localIdentName```.
+- Y comprobamos ahora las clases que se muestran en la consola del navegador para la fuente  ```_next/static/styles.css```, podemos corroborar que en lugar de la cadena hash ostentosamente más larga que había antes, ahora las clases tienen nombres que se ajustan al patrón indicado en ```cssLoaderOptions.localIdentName```.
 
-- Para dar finalmente por terminado el ejemplo, vamos a refactorizar nuestro código para aplicar un estilado más elegante a nuestra tabla de usuarios. Comenzamos con el fichero _./components/user-collection/header.css_, que modificamos tal cual sigue:
+- Como estamos usando `css-modules`, no necesitamos la pagina `_document.js` para cargar los ficheros css. Asi que podemos eliminarla.
+
+## Apendice
+
+- Para dar finalmente por terminado el ejemplo, vamos a refactorizar nuestro código para aplicar un estilado más elegante a nuestra tabla de usuarios:
+
+_./components/users/header.css_
+
 ```diff
--.purple-box {
--  border: 2px dotted purple;
--}
--
--.bluebox {
--  border: 3px solid blue;
--}
-+.header th{
-+  background-color: #DDEFEF;
-+  border: solid 1px #DDEEEE;
-+  color: #336B6B;
-+  padding: 10px;
-+  text-align: left;
-+  text-shadow: 1px 1px 1px #fff;
-+}
+- .purple-box {
+-   border: 2px dotted purple;
+- }
+
+- .blue-box {
+-   border: 3px solid blue;
+- }
+
++ .header {
++   background-color: #ddefef;
++   border: solid 1px #ddeeee;
++   color: #336b6b;
++   padding: 10px;
++   text-align: left;
++   text-shadow: 1px 1px 1px #fff;
++ }
+
 ```
 
-- Acto seguido, creamos dos nuevos ficheros en el directorio _./components/user-collection/_, llamados _./components/user-collection/row.css_ y _./components/user-collection/user-table.css_, con los siguientes contenidos:
-- _./components/user-collection/row.css_
-```diff
-+.row td {
-+  border: solid 1px #DDEEEE;
-+  color: #333;
-+  padding: 10px;
-+  text-shadow: 1px 1px 1px #fff;
-+}
+- Actualizamos `row` y `table`:
+
+_./components/users/row.css_
+
+```css
+.row {
+  border: solid 1px #DDEEEE;
+  color: #333;
+  padding: 10px;
+  text-shadow: 1px 1px 1px #fff;
+}
+
 ```
-- _./components/user-collection/header.css_
-```diff
-+.user-table {
-+  border: solid 1px #DDEEEE;
-+  border-collapse: collapse;
-+  border-spacing: 0;
-+  font: normal 13px Arial, sans-serif;
-+}
+
+_./components/users/table.css_
+
+```css
+.table {
+  border: solid 1px #ddeeee;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font: normal 13px Arial, sans-serif;
+}
+
 ```
 
 - Y por último, modificamos los componentes para importar las nuevas reglas de estilo:
-- _./components/user-collection/header.tsx_
+
+_./components/users/header.tsx_
+
 ```diff
-export const UserHeader = () =>
--    <tr>
-+    <tr className={classNames.header}>
-        <th>
--            <div className={classNames.bluebox}>
-                Avatar
--            </div>
-        </th>
-        <th>
--            <div className={classNames['purple-box']}>
-                Id
--            </div>
-        </th>
+const styles = require('./header.css');
+
+export const Header = () => (
+- <tr>
++ <tr className={header}>
+-   <th className={styles.blueBox}>Avatar</th>
++   <th>Avatar</th>
+-   <th className={styles.purpleBox}>Id</th>
++   <th>Id</th>
+    <th>Name</th>
+  </tr>
+);
+
 ```
 
-- _./components/user-collection/row.tsx_
+_./components/users/row.tsx_
+
 ```diff
+import * as Next from 'next';
 import Link from 'next/link';
+import { User } from '../../model/user';
++ const styles = require('./row.css');
+...
 
-+const classNames = require('./row.css');
-
-interface Props {
-  user: UserEntity;
-}
-
-export const UserRow = (props: Props) =>
--  <tr>
-+  <tr className={classNames.row}>
+export const Row: Next.NextStatelessComponent<Props> = (props) => (
+- <tr>
++ <tr className={styles.row}>
     <td>
-      <img src={props.user.avatar_url} style={{ maxWidth: '10rem' }} />
-    </td>
-    <td>
+...
+
 ```
 
-- _./components/user-collection/user-table.tsx_
+_./components/users/table.tsx_
+
 ```diff
-import { UserRow } from "./row";
+import * as Next from 'next';
+import { User } from '../../model/user';
+import { Header } from './header';
+import { Row } from './row';
++ const styles = require('./table.css');
 
-+const classNames = require('./user-table.css');
+...
 
-interface Props {
-  userCollection: UserEntity[],
-}
+export const Table: Next.NextStatelessComponent<Props> = (props) => (
+- <table>
++ <table className={styles.table}>
+...
 
-export const UserTable = (props : Props) =>
--<table>
-+<table className={classNames['user-table']}>
-  <thead>
-    <UserHeader />
-  </thead>
-  <tbody>
 ```
