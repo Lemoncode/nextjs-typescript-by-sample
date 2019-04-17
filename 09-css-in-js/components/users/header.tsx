@@ -1,9 +1,9 @@
-const styles = require('./header.css');
+import * as s from './header.styles';
 
 export const Header = () => (
   <tr>
-    <th className={styles.blueBox}>Avatar</th>
-    <th className={styles.purpleBox}>Id</th>
+    <s.Avatar>Avatar</s.Avatar>
+    <s.Id>Id</s.Id>
     <th>Name</th>
   </tr>
 );
