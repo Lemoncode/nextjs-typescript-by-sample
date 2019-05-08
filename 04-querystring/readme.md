@@ -68,6 +68,29 @@ export default UserInfoPage;
 npm run dev
 ```
 
+- Add debugging:
+
+### ./.vscode/launch.json
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Next",
+      "runtimeExecutable": "${workspaceFolder}\\node_modules\\.bin\\next",
+      "port": 9229,
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      }
+    }
+  ]
+}
+
+```
+
 - If you want to play a little bit more with query string just add:
 
 _./pages/components/users/row.tsx_
