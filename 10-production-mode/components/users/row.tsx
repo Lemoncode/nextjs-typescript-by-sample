@@ -1,0 +1,23 @@
+import * as Next from 'next';
+import Link from 'next/link';
+import { User } from '../../model/user';
+
+interface Props {
+  user: User;
+}
+
+export const Row: Next.NextStatelessComponent<Props> = (props) => (
+  <tr>
+    <td>
+      <img src={props.user.avatar_url} style={{ maxWidth: '10rem' }} />
+    </td>
+    <td>
+      <span>{props.user.id}</span>
+    </td>
+    <td>
+      <Link as={`user-info/login/${props.user.login}`} href={`/user-info?login=${props.user.login}`}>
+        <a>{props.user.login}</a>
+      </Link>
+    </td>
+  </tr>
+)
