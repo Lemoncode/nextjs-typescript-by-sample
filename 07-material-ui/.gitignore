@@ -1,0 +1,15 @@
+node_modules
+bundles
+.next
+.DS_Store
+dist/
+typings/
+*.orig
+.idea/
+*/src/**/*.js.map
+**/.vscode/
+yarn.lock
+*.log
+lib/
+es/
+package-lock.json
